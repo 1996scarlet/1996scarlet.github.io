@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>bash/mechanism/命令的种类 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="命令的种类Bash 支持的命令包括以下三类：  shell 函数：按照 shell 编程的语法构造的可多次调用的代码块, 与其他语言不同的是, shell 中的函数没有形参列表, 但可以在调用函数时传递任意数量的参数, 函数内部通过 $N 的方式获取指定位置的参数. 我们可以用 typeset -f 命令查看当前 shell 中定义的所有函数函数, 通过下列命令可以直接显示函数名.  123&amp;gt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="bash&#x2F;mechanism&#x2F;命令的种类">
+<meta property="og:url" content="http://yoursite.com/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E7%A7%8D%E7%B1%BB/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="命令的种类Bash 支持的命令包括以下三类：  shell 函数：按照 shell 编程的语法构造的可多次调用的代码块, 与其他语言不同的是, shell 中的函数没有形参列表, 但可以在调用函数时传递任意数量的参数, 函数内部通过 $N 的方式获取指定位置的参数. 我们可以用 typeset -f 命令查看当前 shell 中定义的所有函数函数, 通过下列命令可以直接显示函数名.  123&amp;gt">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-06T13:38:57.641Z">
+<meta property="article:modified_time" content="2020-04-04T09:07:37.000Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-bash/mechanism/命令的种类" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E7%A7%8D%E7%B1%BB/" class="article-date">
+  <time datetime="2020-04-06T13:38:57.641Z" itemprop="datePublished">2020-04-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      bash/mechanism/命令的种类
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="命令的种类"><a href="#命令的种类" class="headerlink" title="命令的种类"></a>命令的种类</h1><p><code>Bash</code> 支持的命令包括以下三类：</p>
+<ul>
+<li><code>shell</code> 函数：按照 <code>shell</code> 编程的语法构造的可多次调用的代码块, 与其他语言不同的是, <code>shell</code> 中的函数没有形参列表, 但可以在调用函数时传递任意数量的参数, 函数内部通过 <code>$N</code> 的方式获取指定位置的参数. 我们可以用 <code>typeset -f</code> 命令查看当前 <code>shell</code> 中定义的所有函数函数, 通过下列命令可以直接显示函数名.</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">typeset</span> -f | awk <span class="string">'$2~/\(\)/ &#123; print $1 &#125;'</span></span><br><span class="line">&gt; <span class="built_in">typeset</span> -f | sed -En <span class="string">"s/(.*) \(\)/\1/ p"</span></span><br><span class="line">&gt; <span class="built_in">typeset</span> -f | grep <span class="string">"()"</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>内置命令：由 <code>shell</code> 在源代码层面提供的命令，而不是存在于文件系统中的某个可执行文件。例如，用于进入或者切换目录的 <code>cd</code> 命令并不是某个外部文件，在执行内置命令时不需要 <code>fork</code> 子进程，也不需要使用 <code>exec</code> 加载外部可执行文件，因此不会触发磁盘 <code>I/O</code> ，执行内置命令相当于执行当前 <code>shell</code> 源代码中的一个函数。我们可以用 <code>type</code> 判断一个命令是否为内置命令：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">type</span> <span class="built_in">cd</span> <span class="built_in">alias</span></span><br><span class="line"><span class="built_in">cd</span> is a shell <span class="built_in">builtin</span></span><br><span class="line"><span class="built_in">alias</span> is a shell <span class="built_in">builtin</span></span><br><span class="line">&gt; compgen -b  <span class="comment"># 显示所有内置命令</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>外部可执行文件：一般被称为程序( <code>program</code> ), 是存储在外部存储设备上的可执行文件. <code>bash</code> 会在当前路径和 <code>PATH</code> 环境变量中的路径下寻找可执行文件, <code>bash</code> 使用哈希表记住可执行文件的完整路径名, 用于避免多次重复的全局搜索.</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt; man</span><br><span class="line">What manual page <span class="keyword">do</span> you want?</span><br><span class="line">&gt; <span class="built_in">type</span> man</span><br><span class="line">man is hashed (/usr/bin/man)  <span class="comment"># 再次访问就已经被哈希表缓存了</span></span><br><span class="line">&gt; <span class="built_in">which</span> man  <span class="comment"># 查看外部命令的路径</span></span><br><span class="line">/usr/bin/man</span><br></pre></td></tr></table></figure>
+
+<p>在进行命令查询时, 优先级为 <code>shell 函数 &gt; 内置命令 &gt; 外部可执行文件</code> , 例如 <code>Ubuntu</code> 系统中 <code>/usr/bin/</code> 路径下自带 <code>GNU</code> 标准 <code>echo</code> 可执行文件, 而 <code>bash</code> 中也存在内置命令 <code>echo</code> , 按照命令查询顺序, 在 <code>bash</code> 中使用 <code>echo</code> 时会优先执行内置命令. 在 <code>bash</code> 中还可以使用 <code>alias</code> 为常用的命令添加别名, 别名的优先级要高于以上三种常规命令.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">which</span> ls</span><br><span class="line">/usr/bin/ls  <span class="comment"># 是外部命令</span></span><br><span class="line">&gt; <span class="built_in">type</span> ls</span><br><span class="line">ls is aliased to `ls --color=auto<span class="string">'   # 别名 ls 会自动显示颜色</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="命令的结构"><a href="#命令的结构" class="headerlink" title="命令的结构"></a>命令的结构</h1><h2 id="实现-shell-函数命令"><a href="#实现-shell-函数命令" class="headerlink" title="实现 shell 函数命令"></a>实现 shell 函数命令</h2><p>在 <code>bash</code> 中定义函数时, 关键字 <code>function</code> 可以省略, 函数内部可能包括内置命令, 外部命令, 变量, 数组, 关键字等, 其本质就是代码块, 不过有一些类似其他语言中函数的特性. 函数的其他语法细节可以参考<a href="https://www.gnu.org/software/bash/manual/html_node/Shell-Functions.html" target="_blank" rel="noopener">GNU Bash 手册</a>.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> pskill()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment"># 这个函数的功能类似于 pkill</span></span><br><span class="line">    <span class="comment"># 判断参数数量是否正确</span></span><br><span class="line">    <span class="keyword">if</span> [ <span class="variable">$#</span> -lt 1 ]; <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"Usage: pskill &lt;proc-name&gt;"</span></span><br><span class="line">        <span class="built_in">return</span> -127</span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">local</span> pid  <span class="comment"># 设置作用域为本地, 也就是代码块内部</span></span><br><span class="line">    <span class="comment"># 不这么写就默认是全局变量</span></span><br><span class="line"></span><br><span class="line">    pid=$(ps -ax | grep <span class="variable">$1</span> | grep -v grep | awk <span class="string">'&#123; print $1 &#125;'</span>)</span><br><span class="line">    <span class="built_in">kill</span> -9 <span class="variable">$pid</span> &amp;  <span class="comment"># 提交作业</span></span><br><span class="line">    <span class="built_in">echo</span> -n <span class="string">"killing <span class="variable">$1</span> (process <span class="variable">$pid</span>)..."</span></span><br><span class="line">    <span class="built_in">wait</span>  <span class="comment"># 等待作业完成</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"slaughtered."</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>相比其他语言, <code>bash</code> 中的函数没有固定的形参列表, 好处是其调用形式更像普通的命令, 例如: <code>函数名 &lt;参数1&gt; &lt;参数2&gt; ...</code> , 但坏处是如果不在函数内部对参数的数量以及合法性进行判断, 很容易产生严重的运行时错误.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt; pskill</span><br><span class="line">Usage: pskill &lt;proc-name&gt;</span><br><span class="line"></span><br><span class="line">&gt; xclock &amp;</span><br><span class="line">[1] 3003</span><br><span class="line">&gt; pskill xclock</span><br><span class="line">[2] 3043</span><br><span class="line">killing xclock (process 3003)...[1]-  Killed                  xclock</span><br><span class="line">[2]+  Done                    <span class="built_in">kill</span> -9 <span class="variable">$pid</span></span><br><span class="line">slaughtered.</span><br></pre></td></tr></table></figure>
+
+<h2 id="实现内置命令"><a href="#实现内置命令" class="headerlink" title="实现内置命令"></a>实现内置命令</h2><p>本节使用 <code>5.0</code> 版本的 <code>GUN bash</code> 源代码进行讲解, 在修改源代码之前, 建议先确认你的环境是否能够成功配置并编译 <code>bash</code> :</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; git <span class="built_in">clone</span> https://git.savannah.gnu.org/git/bash.git</span><br><span class="line">&gt; ./configure</span><br><span class="line">&gt; make  <span class="comment"># 成功则会在当前目录下生成可执行文件</span></span><br></pre></td></tr></table></figure>
+
+<p>现在我们开始实现一个名为 <code>scarlet</code> 的内置命令, 其功能和 <code>eval</code> 相同. 我们令源代码根目录为 <code>$(topdir)</code> , 首先我们要在 <code>$(topdir)/builtins/</code> 路径下建立 <code>scarlet.def</code> 文件并填充如下内容:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$PRODUCES</span> scarlet.c</span><br><span class="line"></span><br><span class="line"><span class="variable">$BUILTIN</span> scarlet</span><br><span class="line"><span class="variable">$FUNCTION</span> scarlet_builtin</span><br><span class="line"><span class="variable">$SHORT_DOC</span> scarlet [arg ...]</span><br><span class="line">Execute arguments as a shell <span class="built_in">command</span>.</span><br><span class="line"></span><br><span class="line">Combine ARGs into a single string, use the result as input to the shell,</span><br><span class="line">and execute the resulting commands.</span><br><span class="line"></span><br><span class="line">Exit Status:</span><br><span class="line">Returns <span class="built_in">exit</span> status of <span class="built_in">command</span> or success <span class="keyword">if</span> <span class="built_in">command</span> is null.</span><br><span class="line"><span class="variable">$END</span></span><br></pre></td></tr></table></figure>
+
+<p><code>*.def</code> 格式的文件是 <code>bash</code> 内置命令的预定义文件, 在 <code>make</code> 过程中会先将 <code>$(topdir)/builtins/mkbuiltins.c</code> 文件编译为 <code>mkbuiltins</code> , 然后使用这个工具将预定义文件转换为 <code>*.c</code> 格式, 再通过 <code>gcc</code> 将其编译为 <code>*.o</code> 文件, 并最终成为 <code>bash</code> 可执行文件的一部分. 使用 <code>mkbuiltins</code> 可以显著提升内置命令的编写效率, 因为这个工具帮你自动生成了大部分重复的代码, 你只需要配置以下几个变量:</p>
+<ul>
+<li><code>$PRODUCES</code> : 用于表示转换源代码目标文件的名字, 变量的命名注意不要与其他文件冲突, 之后我们还要在 <code>Makefile.in</code> 中进行配置.</li>
+<li><code>$BUILTIN</code> : 最终可调用的内置命令的名字, 命名规则与函数相同.</li>
+<li><code>$FUNCTION</code> : 命令的入口函数名, 命名规则与函数相同, 这个函数的实现也需要在这个文件中.</li>
+<li><code>$SHORT_DOC</code> : 命令的简要帮助文档, 以 <code>$END</code> 作为结束标志, 这部分内容在运行时可以通过 <code>命令 --help</code> 的方式查看.</li>
+</ul>
+<p>接下来在我们需要在 <code>scarlet.def</code> 文件中实现 <code>scarlet_builtin</code> 函数:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;config.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined (HAVE_UNISTD_H)</span></span><br><span class="line"><span class="meta">#  <span class="meta-keyword">ifdef</span> _MINIX</span></span><br><span class="line"><span class="meta">#    <span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#  <span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#  <span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"../shell.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"bashgetopt.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"common.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span></span><br><span class="line">scarlet_builtin (<span class="built_in">list</span>)</span><br><span class="line">     WORD_LIST *<span class="built_in">list</span>;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span> (no_options (<span class="built_in">list</span>))</span><br><span class="line">    <span class="keyword">return</span> (EX_USAGE);</span><br><span class="line">  <span class="built_in">list</span> = loptend;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (<span class="built_in">list</span> ? evalstring (string_list (<span class="built_in">list</span>), <span class="string">"scarlet"</span>, SEVAL_NOHIST) : EXECUTION_SUCCESS);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们首先引用了必要的头文件用于处理输入, 主要是为了使用 <code>WORD_LIST</code> 这个数据结构, 它存储了 <code>bash</code> 对当前命令的分词结果 <code>token</code> , 然后通过 <code>evalstring</code> 解析并执行这些 <code>token</code> . 可以看出, 我们在编写这个内置命令时只需要处理核心业务逻辑, 其他部分都可以通过合理配置预定义变量让 <code>mkbuiltins</code> 自动生成. 接下来需要在 <code>Makefile.in</code> 文件中对编译生成的中间文件和引用的头文件进行配置:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># DEFSRC 变量中添加</span></span><br><span class="line">$(srcdir)/scarlet.def</span><br><span class="line"></span><br><span class="line"><span class="comment"># OFILES 变量中添加</span></span><br><span class="line">scarlet.o</span><br><span class="line"></span><br><span class="line"><span class="comment"># dependencies 区域中添加</span></span><br><span class="line">scarlet.o: scarlet.def</span><br><span class="line"></span><br><span class="line"><span class="comment"># def files 区域中添加</span></span><br><span class="line">scarlet.o: $(topdir)/command.h ../config.h $(BASHINCDIR)/memalloc.h</span><br><span class="line">scarlet.o: $(topdir)/error.h $(topdir)/general.h $(topdir)/xmalloc.h</span><br><span class="line">scarlet.o: $(topdir)/quit.h $(topdir)/dispose_cmd.h $(topdir)/make_cmd.h</span><br><span class="line">scarlet.o: $(topdir)/subst.h $(topdir)/externs.h  $(topdir)/sig.h</span><br><span class="line">scarlet.o: $(topdir)/shell.h $(topdir)/syntax.h $(topdir)/unwind_prot.h $(topdir)/variables.h $(topdir)/conftypes.h</span><br><span class="line">scarlet.o: $(BASHINCDIR)/maxpath.h ../pathnames.h</span><br></pre></td></tr></table></figure>
+
+<p>处理完所有的预定义文件后, <code>mkbuiltins</code> 还会生成用于存放所有内置命令接口的 <code>builtins.c</code> 和 <code>builtext.h</code> 文件, 我们现在可以重新配置并编译 <code>bash</code> 来测试我们实现的内置命令 <code>scarlet</code> 的效果:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 注意要进到 $(topdir)/ 路径下</span></span><br><span class="line">&gt; make clean; ./configure; make -j6</span><br><span class="line">&gt; ./bash</span><br><span class="line">&gt; scarlet --<span class="built_in">help</span></span><br><span class="line">scarlet: scarlet [arg ...]</span><br><span class="line">    Execute arguments as a shell <span class="built_in">command</span>.</span><br><span class="line">    </span><br><span class="line">    Combine ARGs into a single string, use the result as input to the shell,</span><br><span class="line">    and execute the resulting commands.</span><br><span class="line">    </span><br><span class="line">    Exit Status:</span><br><span class="line">    Returns <span class="built_in">exit</span> status of <span class="built_in">command</span> or success <span class="keyword">if</span> <span class="built_in">command</span> is null.</span><br><span class="line">&gt; VAR=1; POINT+VAR</span><br><span class="line">&gt; <span class="built_in">echo</span> \<span class="variable">$POINT</span></span><br><span class="line"><span class="variable">$VAR</span>  <span class="comment"># bash 默认只解释一次变量名</span></span><br><span class="line">&gt; scarlet <span class="built_in">echo</span> \<span class="variable">$POINT</span></span><br><span class="line">1  <span class="comment"># 自定义内置变量实现了 eval 多次解释的功能</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="实现外部命令"><a href="#实现外部命令" class="headerlink" title="实现外部命令"></a>实现外部命令</h2><p>大部分外部命令都是事先编译好的二进制可执行文件, 在 <code>bash</code> 中会通过 <code>fork-exec</code> 模式处理每个外部命令, 也就是说外部命令都运行在子进程中. 在本节将通过实现 <code>ls</code> 命令的最基础功能来讲解外部命令的实现过程:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"apue.h"</span>  <span class="comment">// 这个头文件需要自己去 APUE 网站下载</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dirent.h&gt;  // 路径处理相关头文件</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    DIR *dp;  <span class="comment">// 路径数据结构</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dirent</span> *<span class="title">dirp</span>;</span>  <span class="comment">// 存放文件或路径inode, 名称等内容的数据结构</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断参数数量是否正确</span></span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">2</span>)</span><br><span class="line">        err_quit(<span class="string">"usage: myls directory_name"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断传入的目录是否能打开</span></span><br><span class="line">    <span class="keyword">if</span> ((dp = opendir(argv[<span class="number">1</span>])) == <span class="literal">NULL</span>)</span><br><span class="line">        err_sys(<span class="string">"can't open %s"</span>, argv[<span class="number">1</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历指定目录</span></span><br><span class="line">    <span class="keyword">while</span> ((dirp = readdir(dp)) != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, dirp-&gt;d_name);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个例子来自于《Unix环境高级编程》第一章, 实现一个命令至少需要完成输出参数处理, 核心业务逻辑, 结果输出三个部分. 而且建议在参数输入错误时给出用法提示, 在运行出现问题时应该给出适当的退出状态码. 现在我们编译这个命令并将其放到 <code>PATH</code> 包含的目录中, 然后测试这个命令是否能正确输出.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt; sudo gcc 1/ls.c -o /usr/bin/myls</span><br><span class="line">&gt; myls  <span class="comment"># 用法错误</span></span><br><span class="line">usage: myls directory_name  <span class="comment"># 给出提示</span></span><br><span class="line">&gt; myls .  <span class="comment"># 遍历当前路径</span></span><br><span class="line">snap</span><br><span class="line">peko</span><br><span class="line">pekosh</span><br><span class="line">R</span><br><span class="line">.ssh</span><br></pre></td></tr></table></figure>
+
+<h1 id="脚本的结构"><a href="#脚本的结构" class="headerlink" title="脚本的结构"></a>脚本的结构</h1><p>在 <code>bash</code> 中, 脚本就是命令和控制逻辑的组合, 我们先看一个普通脚本的例子：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">clear</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"This is information provided by mysystem.sh.  Program starts now."</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span> <span class="string">"Hello, <span class="variable">$USER</span>\n\n"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span> <span class="string">"Today's date is `date` , this is week `date +"</span>%V<span class="string">"` .\n\n"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"These users are currently connected:"</span></span><br><span class="line">w | cut -d <span class="string">" "</span> -f 1 - | grep -v USER | sort -u</span><br><span class="line"><span class="built_in">echo</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span> <span class="string">"This is `uname -s` running on a `uname -m` processor.\n\n"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"This is the uptime information:"</span></span><br><span class="line">uptime</span><br><span class="line"><span class="built_in">echo</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"That's all folks!"</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>#!/bin/bash</code> 是 <code>Shebang</code> , 用于指定这个脚本的解释器。</li>
+<li><code>/usr/bin/clear</code> 是一个外部命令，用于清除当前 <code>shell</code> 中的输出信息。</li>
+<li><code>echo</code> 和 <code>printf</code> 都是 <code>bash</code> 的内置命令，不同的是 <code>echo</code> 始终以 <code>0</code> 状态码退出（退出状态永远是成功），并且仅在标准输出上打印参数，然后打印行尾字符，而 <code>printf</code> 允许定义格式字符串，并在失败时给出非零的退出状态代码。</li>
+<li><code>USER</code> 是一个变量，用于存储当前用户的名字，需要使用`# 命令的种类</li>
+</ul>
+<p><code>Bash</code> 支持的命令包括以下三类：</p>
+<ul>
+<li><code>shell</code> 函数：按照 <code>shell</code> 编程的语法构造的可多次调用的代码块, 与其他语言不同的是, <code>shell</code> 中的函数没有形参列表, 但可以在调用函数时传递任意数量的参数, 函数内部通过 <code>$N</code> 的方式获取指定位置的参数. 我们可以用 <code>typeset -f</code> 命令查看当前 <code>shell</code> 中定义的所有函数函数, 通过下列命令可以直接显示函数名.</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">typeset</span> -f | awk <span class="string">'$2~/\(\)/ &#123; print $1 &#125;'</span></span><br><span class="line">&gt; <span class="built_in">typeset</span> -f | sed -En <span class="string">"s/(.*) \(\)/\1/ p"</span></span><br><span class="line">&gt; <span class="built_in">typeset</span> -f | grep <span class="string">"()"</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>内置命令：由 <code>shell</code> 在源代码层面提供的命令，而不是存在于文件系统中的某个可执行文件。例如，用于进入或者切换目录的 <code>cd</code> 命令并不是某个外部文件，在执行内置命令时不需要 <code>fork</code> 子进程，也不需要使用 <code>exec</code> 加载外部可执行文件，因此不会触发磁盘 <code>I/O</code> ，执行内置命令相当于执行当前 <code>shell</code> 源代码中的一个函数。我们可以用 <code>type</code> 判断一个命令是否为内置命令：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">type</span> <span class="built_in">cd</span> <span class="built_in">alias</span></span><br><span class="line"><span class="built_in">cd</span> is a shell <span class="built_in">builtin</span></span><br><span class="line"><span class="built_in">alias</span> is a shell <span class="built_in">builtin</span></span><br><span class="line">&gt; compgen -b  <span class="comment"># 显示所有内置命令</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>外部可执行文件：一般被称为程序( <code>program</code> ), 是存储在外部存储设备上的可执行文件. <code>bash</code> 会在当前路径和 <code>PATH</code> 环境变量中的路径下寻找可执行文件, <code>bash</code> 使用哈希表记住可执行文件的完整路径名, 用于避免多次重复的全局搜索.</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt; man</span><br><span class="line">What manual page <span class="keyword">do</span> you want?</span><br><span class="line">&gt; <span class="built_in">type</span> man</span><br><span class="line">man is hashed (/usr/bin/man)  <span class="comment"># 再次访问就已经被哈希表缓存了</span></span><br><span class="line">&gt; <span class="built_in">which</span> man  <span class="comment"># 查看外部命令的路径</span></span><br><span class="line">/usr/bin/man</span><br></pre></td></tr></table></figure>
+
+<p>在进行命令查询时, 优先级为 <code>shell 函数 &gt; 内置命令 &gt; 外部可执行文件</code> , 例如 <code>Ubuntu</code> 系统中 <code>/usr/bin/</code> 路径下自带 <code>GNU</code> 标准 <code>echo</code> 可执行文件, 而 <code>bash</code> 中也存在内置命令 <code>echo</code> , 按照命令查询顺序, 在 <code>bash</code> 中使用 <code>echo</code> 时会优先执行内置命令. 在 <code>bash</code> 中还可以使用 <code>alias</code> 为常用的命令添加别名, 别名的优先级要高于以上三种常规命令.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">which</span> ls</span><br><span class="line">/usr/bin/ls  <span class="comment"># 是外部命令</span></span><br><span class="line">&gt; <span class="built_in">type</span> ls</span><br><span class="line">ls is aliased to `ls --color=auto<span class="string">'   # 别名 ls 会自动显示颜色</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="命令的结构-1"><a href="#命令的结构-1" class="headerlink" title="命令的结构"></a>命令的结构</h1><h2 id="实现-shell-函数命令-1"><a href="#实现-shell-函数命令-1" class="headerlink" title="实现 shell 函数命令"></a>实现 shell 函数命令</h2><p>在 <code>bash</code> 中定义函数时, 关键字 <code>function</code> 可以省略, 函数内部可能包括内置命令, 外部命令, 变量, 数组, 关键字等, 其本质就是代码块, 不过有一些类似其他语言中函数的特性. 函数的其他语法细节可以参考<a href="https://www.gnu.org/software/bash/manual/html_node/Shell-Functions.html" target="_blank" rel="noopener">GNU Bash 手册</a>.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> pskill()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment"># 这个函数的功能类似于 pkill</span></span><br><span class="line">    <span class="comment"># 判断参数数量是否正确</span></span><br><span class="line">    <span class="keyword">if</span> [ <span class="variable">$#</span> -lt 1 ]; <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"Usage: pskill &lt;proc-name&gt;"</span></span><br><span class="line">        <span class="built_in">return</span> -127</span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">local</span> pid  <span class="comment"># 设置作用域为本地, 也就是代码块内部</span></span><br><span class="line">    <span class="comment"># 不这么写就默认是全局变量</span></span><br><span class="line"></span><br><span class="line">    pid=$(ps -ax | grep <span class="variable">$1</span> | grep -v grep | awk <span class="string">'&#123; print $1 &#125;'</span>)</span><br><span class="line">    <span class="built_in">kill</span> -9 <span class="variable">$pid</span> &amp;  <span class="comment"># 提交作业</span></span><br><span class="line">    <span class="built_in">echo</span> -n <span class="string">"killing <span class="variable">$1</span> (process <span class="variable">$pid</span>)..."</span></span><br><span class="line">    <span class="built_in">wait</span>  <span class="comment"># 等待作业完成</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"slaughtered."</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>相比其他语言, <code>bash</code> 中的函数没有固定的形参列表, 好处是其调用形式更像普通的命令, 例如: <code>函数名 &lt;参数1&gt; &lt;参数2&gt; ...</code> , 但坏处是如果不在函数内部对参数的数量以及合法性进行判断, 很容易产生严重的运行时错误.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt; pskill</span><br><span class="line">Usage: pskill &lt;proc-name&gt;</span><br><span class="line"></span><br><span class="line">&gt; xclock &amp;</span><br><span class="line">[1] 3003</span><br><span class="line">&gt; pskill xclock</span><br><span class="line">[2] 3043</span><br><span class="line">killing xclock (process 3003)...[1]-  Killed                  xclock</span><br><span class="line">[2]+  Done                    <span class="built_in">kill</span> -9 <span class="variable">$pid</span></span><br><span class="line">slaughtered.</span><br></pre></td></tr></table></figure>
+
+<h2 id="实现内置命令-1"><a href="#实现内置命令-1" class="headerlink" title="实现内置命令"></a>实现内置命令</h2><p>本节使用 <code>5.0</code> 版本的 <code>GUN bash</code> 源代码进行讲解, 在修改源代码之前, 建议先确认你的环境是否能够成功配置并编译 <code>bash</code> :</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; git <span class="built_in">clone</span> https://git.savannah.gnu.org/git/bash.git</span><br><span class="line">&gt; ./configure</span><br><span class="line">&gt; make  <span class="comment"># 成功则会在当前目录下生成可执行文件</span></span><br></pre></td></tr></table></figure>
+
+<p>现在我们开始实现一个名为 <code>scarlet</code> 的内置命令, 其功能和 <code>eval</code> 相同. 我们令源代码根目录为 <code>$(topdir)</code> , 首先我们要在 <code>$(topdir)/builtins/</code> 路径下建立 <code>scarlet.def</code> 文件并填充如下内容:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$PRODUCES</span> scarlet.c</span><br><span class="line"></span><br><span class="line"><span class="variable">$BUILTIN</span> scarlet</span><br><span class="line"><span class="variable">$FUNCTION</span> scarlet_builtin</span><br><span class="line"><span class="variable">$SHORT_DOC</span> scarlet [arg ...]</span><br><span class="line">Execute arguments as a shell <span class="built_in">command</span>.</span><br><span class="line"></span><br><span class="line">Combine ARGs into a single string, use the result as input to the shell,</span><br><span class="line">and execute the resulting commands.</span><br><span class="line"></span><br><span class="line">Exit Status:</span><br><span class="line">Returns <span class="built_in">exit</span> status of <span class="built_in">command</span> or success <span class="keyword">if</span> <span class="built_in">command</span> is null.</span><br><span class="line"><span class="variable">$END</span></span><br></pre></td></tr></table></figure>
+
+<p><code>*.def</code> 格式的文件是 <code>bash</code> 内置命令的预定义文件, 在 <code>make</code> 过程中会先将 <code>$(topdir)/builtins/mkbuiltins.c</code> 文件编译为 <code>mkbuiltins</code> , 然后使用这个工具将预定义文件转换为 <code>*.c</code> 格式, 再通过 <code>gcc</code> 将其编译为 <code>*.o</code> 文件, 并最终成为 <code>bash</code> 可执行文件的一部分. 使用 <code>mkbuiltins</code> 可以显著提升内置命令的编写效率, 因为这个工具帮你自动生成了大部分重复的代码, 你只需要配置以下几个变量:</p>
+<ul>
+<li><code>$PRODUCES</code> : 用于表示转换源代码目标文件的名字, 变量的命名注意不要与其他文件冲突, 之后我们还要在 <code>Makefile.in</code> 中进行配置.</li>
+<li><code>$BUILTIN</code> : 最终可调用的内置命令的名字, 命名规则与函数相同.</li>
+<li><code>$FUNCTION</code> : 命令的入口函数名, 命名规则与函数相同, 这个函数的实现也需要在这个文件中.</li>
+<li><code>$SHORT_DOC</code> : 命令的简要帮助文档, 以 <code>$END</code> 作为结束标志, 这部分内容在运行时可以通过 <code>命令 --help</code> 的方式查看.</li>
+</ul>
+<p>接下来在我们需要在 <code>scarlet.def</code> 文件中实现 <code>scarlet_builtin</code> 函数:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;config.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined (HAVE_UNISTD_H)</span></span><br><span class="line"><span class="meta">#  <span class="meta-keyword">ifdef</span> _MINIX</span></span><br><span class="line"><span class="meta">#    <span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#  <span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#  <span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"../shell.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"bashgetopt.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"common.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span></span><br><span class="line">scarlet_builtin (<span class="built_in">list</span>)</span><br><span class="line">     WORD_LIST *<span class="built_in">list</span>;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span> (no_options (<span class="built_in">list</span>))</span><br><span class="line">    <span class="keyword">return</span> (EX_USAGE);</span><br><span class="line">  <span class="built_in">list</span> = loptend;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (<span class="built_in">list</span> ? evalstring (string_list (<span class="built_in">list</span>), <span class="string">"scarlet"</span>, SEVAL_NOHIST) : EXECUTION_SUCCESS);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们首先引用了必要的头文件用于处理输入, 主要是为了使用 <code>WORD_LIST</code> 这个数据结构, 它存储了 <code>bash</code> 对当前命令的分词结果 <code>token</code> , 然后通过 <code>evalstring</code> 解析并执行这些 <code>token</code> . 可以看出, 我们在编写这个内置命令时只需要处理核心业务逻辑, 其他部分都可以通过合理配置预定义变量让 <code>mkbuiltins</code> 自动生成. 接下来需要在 <code>Makefile.in</code> 文件中对编译生成的中间文件和引用的头文件进行配置:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># DEFSRC 变量中添加</span></span><br><span class="line">$(srcdir)/scarlet.def</span><br><span class="line"></span><br><span class="line"><span class="comment"># OFILES 变量中添加</span></span><br><span class="line">scarlet.o</span><br><span class="line"></span><br><span class="line"><span class="comment"># dependencies 区域中添加</span></span><br><span class="line">scarlet.o: scarlet.def</span><br><span class="line"></span><br><span class="line"><span class="comment"># def files 区域中添加</span></span><br><span class="line">scarlet.o: $(topdir)/command.h ../config.h $(BASHINCDIR)/memalloc.h</span><br><span class="line">scarlet.o: $(topdir)/error.h $(topdir)/general.h $(topdir)/xmalloc.h</span><br><span class="line">scarlet.o: $(topdir)/quit.h $(topdir)/dispose_cmd.h $(topdir)/make_cmd.h</span><br><span class="line">scarlet.o: $(topdir)/subst.h $(topdir)/externs.h  $(topdir)/sig.h</span><br><span class="line">scarlet.o: $(topdir)/shell.h $(topdir)/syntax.h $(topdir)/unwind_prot.h $(topdir)/variables.h $(topdir)/conftypes.h</span><br><span class="line">scarlet.o: $(BASHINCDIR)/maxpath.h ../pathnames.h</span><br></pre></td></tr></table></figure>
+
+<p>处理完所有的预定义文件后, <code>mkbuiltins</code> 还会生成用于存放所有内置命令接口的 <code>builtins.c</code> 和 <code>builtext.h</code> 文件, 我们现在可以重新配置并编译 <code>bash</code> 来测试我们实现的内置命令 <code>scarlet</code> 的效果:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 注意要进到 $(topdir)/ 路径下</span></span><br><span class="line">&gt; make clean; ./configure; make -j6</span><br><span class="line">&gt; ./bash</span><br><span class="line">&gt; scarlet --<span class="built_in">help</span></span><br><span class="line">scarlet: scarlet [arg ...]</span><br><span class="line">    Execute arguments as a shell <span class="built_in">command</span>.</span><br><span class="line">    </span><br><span class="line">    Combine ARGs into a single string, use the result as input to the shell,</span><br><span class="line">    and execute the resulting commands.</span><br><span class="line">    </span><br><span class="line">    Exit Status:</span><br><span class="line">    Returns <span class="built_in">exit</span> status of <span class="built_in">command</span> or success <span class="keyword">if</span> <span class="built_in">command</span> is null.</span><br><span class="line">&gt; VAR=1; POINT+VAR</span><br><span class="line">&gt; <span class="built_in">echo</span> \<span class="variable">$POINT</span></span><br><span class="line"><span class="variable">$VAR</span>  <span class="comment"># bash 默认只解释一次变量名</span></span><br><span class="line">&gt; scarlet <span class="built_in">echo</span> \<span class="variable">$POINT</span></span><br><span class="line">1  <span class="comment"># 自定义内置变量实现了 eval 多次解释的功能</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="实现外部命令-1"><a href="#实现外部命令-1" class="headerlink" title="实现外部命令"></a>实现外部命令</h2><p>大部分外部命令都是事先编译好的二进制可执行文件, 在 <code>bash</code> 中会通过 <code>fork-exec</code> 模式处理每个外部命令, 也就是说外部命令都运行在子进程中. 在本节将通过实现 <code>ls</code> 命令的最基础功能来讲解外部命令的实现过程:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"apue.h"</span>  <span class="comment">// 这个头文件需要自己去 APUE 网站下载</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dirent.h&gt;  // 路径处理相关头文件</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    DIR *dp;  <span class="comment">// 路径数据结构</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dirent</span> *<span class="title">dirp</span>;</span>  <span class="comment">// 存放文件或路径inode, 名称等内容的数据结构</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断参数数量是否正确</span></span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">2</span>)</span><br><span class="line">        err_quit(<span class="string">"usage: myls directory_name"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断传入的目录是否能打开</span></span><br><span class="line">    <span class="keyword">if</span> ((dp = opendir(argv[<span class="number">1</span>])) == <span class="literal">NULL</span>)</span><br><span class="line">        err_sys(<span class="string">"can't open %s"</span>, argv[<span class="number">1</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历指定目录</span></span><br><span class="line">    <span class="keyword">while</span> ((dirp = readdir(dp)) != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, dirp-&gt;d_name);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个例子来自于《Unix环境高级编程》第一章, 实现一个命令至少需要完成输出参数处理, 核心业务逻辑, 结果输出三个部分. 而且建议在参数输入错误时给出用法提示, 在运行出现问题时应该给出适当的退出状态码. 现在我们编译这个命令并将其放到 <code>PATH</code> 包含的目录中, 然后测试这个命令是否能正确输出.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt; sudo gcc 1/ls.c -o /usr/bin/myls</span><br><span class="line">&gt; myls  <span class="comment"># 用法错误</span></span><br><span class="line">usage: myls directory_name  <span class="comment"># 给出提示</span></span><br><span class="line">&gt; myls .  <span class="comment"># 遍历当前路径</span></span><br><span class="line">snap</span><br><span class="line">peko</span><br><span class="line">pekosh</span><br><span class="line">R</span><br><span class="line">.ssh</span><br></pre></td></tr></table></figure>
+
+<h1 id="脚本的结构-1"><a href="#脚本的结构-1" class="headerlink" title="脚本的结构"></a>脚本的结构</h1><p>在 <code>bash</code> 中, 脚本就是命令和控制逻辑的组合, 我们先看一个普通脚本的例子：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">clear</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"This is information provided by mysystem.sh.  Program starts now."</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span> <span class="string">"Hello, <span class="variable">$USER</span>\n\n"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span> <span class="string">"Today's date is `date` , this is week `date +"</span>%V<span class="string">"` .\n\n"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"These users are currently connected:"</span></span><br><span class="line">w | cut -d <span class="string">" "</span> -f 1 - | grep -v USER | sort -u</span><br><span class="line"><span class="built_in">echo</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span> <span class="string">"This is `uname -s` running on a `uname -m` processor.\n\n"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"This is the uptime information:"</span></span><br><span class="line">uptime</span><br><span class="line"><span class="built_in">echo</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"That's all folks!"</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>#!/bin/bash</code> 是 <code>Shebang</code> , 用于指定这个脚本的解释器。</li>
+<li><code>/usr/bin/clear</code> 是一个外部命令，用于清除当前 <code>shell</code> 中的输出信息。</li>
+<li><code>echo</code> 和 <code>printf</code> 都是 <code>bash</code> 的内置命令，不同的是 <code>echo</code> 始终以 <code>0</code> 状态码退出（退出状态永远是成功），并且仅在标准输出上打印参数，然后打印行尾字符，而 <code>printf</code> 允许定义格式字符串，并在失败时给出非零的退出状态代码。</li>
+<li><code>USER</code> 是一个变量，用于存储当前用户的名字，需要使用取出变量的值。</li>
+</ul>
+<p>脚本有两种执行方式:</p>
+<ul>
+<li><code>source</code> 或 <code>.</code> : 这种方式是在当前 <code>shell</code> 中执行脚本, 等价于用 <code>{}</code> 包裹的代码块, 但要注意这种执行方法可能会污染当前 <code>shell</code> 中的变量.</li>
+<li><code>./脚本名</code> 或 <code>bash 脚本名</code> : 这种方式本质上是执行外部变量 <code>bash</code> 并将脚本名作为参数传递给命令, 这种方法启动的脚本会运行在 <code>child shell</code> 中, 不可以访问父 <code>shell</code> 的全局变量, 只能访问环境变量. 需要注意的是使用 <code>./脚本名</code> 方法执行脚本需要在脚本第一行配置 <code>Shebang</code> .</li>
+</ul>
+<p>我们再来看一个初始化脚本 <code>upon-sound</code> 的例子：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="string">"<span class="variable">$1</span>"</span> <span class="keyword">in</span>  <span class="comment"># 脚本的控制逻辑，根据输入选择要执行的分支</span></span><br><span class="line"><span class="string">'start'</span>)  <span class="comment"># 服务启动时执行</span></span><br><span class="line">  cat /usr/share/audio/at_your_service.au &gt; /dev/audio</span><br><span class="line">  ;;</span><br><span class="line"><span class="string">'stop'</span>)  <span class="comment"># 服务停止时执行</span></span><br><span class="line">  cat /usr/share/audio/oh_no_not_again.au &gt; /dev/audio</span><br><span class="line">  ;;</span><br><span class="line"><span class="keyword">esac</span></span><br><span class="line"><span class="built_in">exit</span> 0</span><br></pre></td></tr></table></figure>
+
+<p>初始化脚本（启动脚本）存储在 <code>/etc/rc.d/init.d</code> 或 <code>/etc/init.d</code> 目录下，用于启动系统服务，例如：系统日志服务，电源管理服务，名称和邮件服务。 <code>PID=1</code> 的初始化进程 <code>init</code> 读取其配置文件，并决定在每个运行级别中启动或停止哪些服务。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; mv upon-sound /etc/init.d/upon-sound</span><br><span class="line">&gt; ln -s /etc/init.d/upon-sound /etc/rc3.d/S99upon-sound  <span class="comment"># 运行级别为3 启动时调用 start</span></span><br><span class="line">&gt; ln -s /etc/init.d/upon-soudecanshund /etc/rc0.d/K01upon-sound  <span class="comment"># 运行级别为0 关机时调用 stop</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h1><ul>
+<li><a href="https://catonmat.net/bash-functions" target="_blank" rel="noopener">Something you didn’t know about functions in bash</a></li>
+<li><a href="https://linjian.org/blog/tech/linux/shell/bash-add-builtin" target="_blank" rel="noopener">Adding builtins for bash</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E7%A7%8D%E7%B1%BB/" data-id="ck8oiuufq000ae6ax0ugk3v25" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/04/06/bash/mechanism/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          bash/mechanism/信号处理
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">bash/mechanism/命令的执行方式</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/">bash/mechanism/信号处理</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E7%A7%8D%E7%B1%BB/">bash/mechanism/命令的种类</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F/">bash/mechanism/命令的执行方式</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/">bash/mechanism/自动补全</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E5%AD%90shell/">bash/mechanism/子shell</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

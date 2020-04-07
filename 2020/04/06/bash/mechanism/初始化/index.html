@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>bash/mechanism/初始化 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Bash 初始化文件交互式 login shell在下列情况下，我们可以获得一个 login shell ：  登录系统时获得的顶层 shell ，无论是通过本地终端登录，还是通过网络 ssh 登录。这种情况下获得的 login shell 是一个交互式 shell 。 在终端下使用 --login 选项调用 bash ，可以获得一个交互式 login shell 。 在脚本中使用 --login">
+<meta property="og:type" content="article">
+<meta property="og:title" content="bash&#x2F;mechanism&#x2F;初始化">
+<meta property="og:url" content="http://yoursite.com/2020/04/06/bash/mechanism/%E5%88%9D%E5%A7%8B%E5%8C%96/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Bash 初始化文件交互式 login shell在下列情况下，我们可以获得一个 login shell ：  登录系统时获得的顶层 shell ，无论是通过本地终端登录，还是通过网络 ssh 登录。这种情况下获得的 login shell 是一个交互式 shell 。 在终端下使用 --login 选项调用 bash ，可以获得一个交互式 login shell 。 在脚本中使用 --login">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-06T13:38:57.641Z">
+<meta property="article:modified_time" content="2020-04-04T05:30:48.000Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-bash/mechanism/初始化" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/06/bash/mechanism/%E5%88%9D%E5%A7%8B%E5%8C%96/" class="article-date">
+  <time datetime="2020-04-06T13:38:57.641Z" itemprop="datePublished">2020-04-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      bash/mechanism/初始化
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Bash-初始化文件"><a href="#Bash-初始化文件" class="headerlink" title="Bash 初始化文件"></a>Bash 初始化文件</h1><h2 id="交互式-login-shell"><a href="#交互式-login-shell" class="headerlink" title="交互式 login shell"></a>交互式 login shell</h2><p>在下列情况下，我们可以获得一个 <code>login shell</code> ：</p>
+<ul>
+<li>登录系统时获得的顶层 <code>shell</code> ，无论是通过本地终端登录，还是通过网络 <code>ssh</code> 登录。这种情况下获得的 <code>login shell</code> 是一个交互式 <code>shell</code> 。</li>
+<li>在终端下使用 <code>--login</code> 选项调用 <code>bash</code> ，可以获得一个交互式 <code>login shell</code> 。</li>
+<li>在脚本中使用 <code>--login</code> 选项调用 <code>bash</code> （例如： <code>#!/bin/bash --login</code> ）可以得到一个非交互式的 <code>login shell</code> 。</li>
+<li>使用 <code>su -</code> 切换到指定用户时，获得此用户的 <code>login shell</code> 。如果不使用 <code>-</code> ，则获得 <code>non-login shell</code> 。</li>
+</ul>
+<p><code>login shell</code> 启动时首先读取 <code>/etc/profile</code> 系统全局配置，然后依次查找 <code>~/.bash_profile</code> 、 <code>~/.bash_login</code> 、 <code>~/.profile</code> 三个配置文件，并且读取<strong>首个</strong>找到的并且可读的文件。 <code>login shell</code> 退出时读取并执行 <code>~/.bash_logout</code> 中的命令。 如果配置文件存在但不可读，则会显示错误消息；如果文件不存在， <code>bash</code> 将自动搜索下一个文件。</p>
+<blockquote>
+<p>[!1info]<br>默认的 <code>/etc/profile</code> 会定义 <code>PATH</code> 、 <code>USER</code> 、 <code>MAIL</code> 、 <code>HOSTNAME</code> 、 <code>HISTSIZE</code> 等全局环境变量，还会自动导入 <code>/etc/bash.bashrc</code> 文件（包含系统级 <code>shell</code> 函数和别名），以及 <code>/etc/profile.d</code> 路径下被用于针对特定程序进行初始化的所有 <code>*.sh</code> 文件。</p>
+</blockquote>
+<h2 id="交互式-non-login-shell"><a href="#交互式-non-login-shell" class="headerlink" title="交互式 non-login shell"></a>交互式 non-login shell</h2><p>非登录 <code>shell</code> 意味着在启动时不必通过系统身份验证。 <code>GUI</code> 中用户打开的终端默认为非登录 <code>shell</code> ，可以通过 <code>logout</code> 命令判断：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在Ubuntu GUI桌面打开一个终端</span></span><br><span class="line">&gt; <span class="built_in">logout</span></span><br><span class="line">bash: <span class="built_in">logout</span>: not login shell: use `<span class="built_in">exit</span><span class="string">'</span></span><br><span class="line"><span class="string">&gt; bash --login</span></span><br><span class="line"><span class="string">&gt; logout  # 正常登出 什么也不会输出</span></span><br></pre></td></tr></table></figure>
+
+<p>非登录 <code>shell</code> 在初始化时仅读取 <code>~/.bashrc</code> 资源文件。</p>
+<blockquote>
+<p>[!1INFO]<br><code>~/.bashrc</code> 文件会自动被 <code>~/.bash_profile</code> 或 <code>~/.profile</code> 加载，因此为了保证 <code>login shell</code> 和交互式 <code>non-login shell</code> 得到相同的配置，一般将环境变量定义在 <code>~/.bashrc</code> 文件中。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">echo</span> <span class="string">"export sflag=\"login shell will see this message\""</span> &gt;&gt; ~/.profile    </span><br><span class="line">&gt; bash  </span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="variable">$sflag</span>  </span><br><span class="line">                    <span class="comment"># 找不到这个变量 会打印一个空行</span></span><br><span class="line">&gt; <span class="built_in">exit</span>  </span><br><span class="line">&gt; bash --login  </span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="variable">$sflag</span>  </span><br><span class="line">login shell will see this message  </span><br><span class="line">&gt; <span class="built_in">logout</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="非交互式-shell"><a href="#非交互式-shell" class="headerlink" title="非交互式 shell"></a>非交互式 shell</h2><p>通过 <code>bash</code> 命令执行脚本时会以非交互（ <code>non-interactively</code> ）的方式启动 <code>shell</code> ，这保证了在脚本执行过程中不会被用户干扰。在非交互式脚本启动时，仅会加载 <code>BASH_ENV</code> 变量指向的文件。</p>
+<blockquote>
+<p>[!1WARN]<br>由于 <code>PATH</code> 变量默认不会被非交互式 <code>shell</code> 加载，因此变量 <code>BASH_ENV</code> 的值应该为绝对路径。</p>
+</blockquote>
+<p>通过特殊变量 <code>-</code> 可以查看当前shell的模式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">echo</span> $-</span><br><span class="line">himBHs  <span class="comment"># 带有'i'就是交互式shell</span></span><br></pre></td></tr></table></figure>
+
+<p>另一个简单的方式是检查当前 <code>shell</code> 中是否存在提示符环境变量 <code>PS1</code> .</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$PS1</span>"</span> ]; <span class="keyword">then</span> <span class="built_in">echo</span> <span class="string">"非交互式"</span>;<span class="keyword">else</span> <span class="built_in">echo</span> <span class="string">"交互式"</span>;<span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="特殊情况"><a href="#特殊情况" class="headerlink" title="特殊情况"></a>特殊情况</h1><h2 id="兼容模式"><a href="#兼容模式" class="headerlink" title="兼容模式"></a>兼容模式</h2><p>如果使用命令 <code>sh</code> 调用 <code>bash</code> ，则为了保证兼容性会按照 <code>sh</code> 的方式对 <code>bash</code> 进行初始化。作为 <code>login shell</code> 启动时， <code>bash</code> 依次读取 <code>/etc/profile</code> 和 <code>~/.profile</code> 配置文件。作为 <code>non-login shell</code> 启动时， <code>bash</code> 仅会读取环境变量 <code>ENV</code> 指向的文件。 </p>
+<h2 id="POSIX-模式"><a href="#POSIX-模式" class="headerlink" title="POSIX 模式"></a>POSIX 模式</h2><p>当通过以下方式启动 <code>bash</code> 时：</p>
+<ul>
+<li>设置 <code>set -o posix</code> 或 <code>export POSIXLY_CORRECT=1</code> </li>
+<li><code>bash --posix</code> </li>
+</ul>
+<p><code>bash</code> 会尽可能按照 <code>POSIX</code> 标准进行初始化，仅会读取环境变量 <code>ENV</code> 指向的文件。</p>
+<h2 id="远程启动脚本"><a href="#远程启动脚本" class="headerlink" title="远程启动脚本"></a>远程启动脚本</h2><p>使用 <code>rshd</code> 远程启动脚本时仅会加载 <code>~/.bashrc</code> 文件，但要注意的是尽量不要使用 <code>rlogin, telnet, rsh, rcp</code> 等远程命令，因为这些命令会传输未加密的明文信息。如果有远程访问需求尽量使用<a href="http://www.openssh.org/" target="_blank" rel="noopener">SSH</a>。</p>
+<h2 id="UID-与-EUID-不匹配"><a href="#UID-与-EUID-不匹配" class="headerlink" title="UID 与 EUID 不匹配"></a>UID 与 EUID 不匹配</h2><p>如果我们给 <code>bash</code> 设置 <code>set-user-id</code> 标志，那么由于其默认所有者为 <code>root</code> ，当其他非 <code>root</code> 用户运行 <code>bash</code> 时，该进程的 <code>UID</code> 将不等于 <code>EUID</code> ，这种情况下为了保证安全性， <code>bash</code> 在初始化阶段不会加载任何文件。</p>
+<blockquote>
+<p>[!1INFO]<br><code>Linux</code> 内核会为每个进程维护 <code>task_struct</code> 用于记录进程运行时所需要的信息, 其中 <code>UID</code> （真实用户ID）用于记录创建进程的用户的 <code>UID</code> ， <code>EUID</code> （有效用户ID）用于判断当前进程对文件的访问级别，一般情况下 <code>UID = EUID</code> 。如果可执行文件的 <code>set-user-id: SUID</code> 位有效（例如： <code>/usr/bin/passwd</code> 的权限为 <code>-rwsr-xr-x</code> ，用户级别的 <code>x</code> 被替换为 <code>s</code> ），表示当该文件被执行时，进程具有文件所有者的权限而不是创建者的权限, 这时 <code>EUID</code> 的值为文件所有者的 <code>UID</code> , 而不是进程创建者的 <code>UID</code> .</p>
+</blockquote>
+<h2 id="受限制的-shell"><a href="#受限制的-shell" class="headerlink" title="受限制的 shell"></a>受限制的 shell</h2><p>通过 <code>rbash</code> 或 <code>bash --restricted</code> 或 <code>bash -r</code> 启动时会生成功能受限制的shell，具体表现为：</p>
+<ul>
+<li>不能使用 <code>cd</code> 命令并且命令中不能包含 <code>/</code> </li>
+<li>不能更改 <code>SHELL</code> 、 <code>PATH</code> 、 <code>ENV</code> 和 <code>BASH_ENV</code> 环境变量</li>
+<li><code>source</code> 命令的参数也不能包含带有 <code>/</code> 的文件</li>
+<li><code>hash –p &lt;path&gt; &lt;name&gt;</code> 用于给路径起别名的命令的参数中也不能包含 <code>/</code> </li>
+<li>初始化时不会导入文件中的函数并且会忽略 <code>SHELLOPTS</code> </li>
+<li>不能使用重定向</li>
+<li>不能使用 <code>exec</code> 命令</li>
+<li>不能使用 <code>enable -f/-d</code> 增加删除命令</li>
+<li>不能使用 <code>command -p</code> 指定运行命令需要的路径</li>
+<li>不能主动关闭限制模式</li>
+</ul>
+<p>这个功能<strong>理论上</strong>可以让用户在指定的文件夹内执行指定的文件来完成有限的功能，但是如果环境变量设置不当会导致用户很轻松地就能解除限制：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; rbash</span><br><span class="line">&gt; <span class="built_in">cd</span> /etc</span><br><span class="line">rbash: <span class="built_in">cd</span>: restricted</span><br><span class="line">&gt; bash</span><br><span class="line">&gt; <span class="built_in">cd</span> /etc  <span class="comment"># 可以成功执行，因为这个时候我们在bash环境中，没有任何限制</span></span><br></pre></td></tr></table></figure>
+
+<p>一种有效的做法是给新建的用户的能执行的命令作出限制，例如我们可以新建一个只能执行 <code>ftp</code> 命令的 <code>ruser</code> ：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt; useradd -s /bin/rbash ruser  <span class="comment"># 设置用户登录时提供的shell</span></span><br><span class="line">&gt; chown -R root:ruser /home/ruser/.bashrc /home/ruser/.bash_profile</span><br><span class="line"><span class="comment"># 设置root为拥有者，ruser组为组拥有者（新建的ruser默认输入ruser组）</span></span><br><span class="line">&gt; chmod 640 /home/ruser/.bashrc /home/ruser/.bash_profile</span><br><span class="line"><span class="comment"># root可以读写，ruser组里的用户只读，其他用户什么也不能干</span></span><br><span class="line">&gt; mkdir /home/ruser/bin  <span class="comment"># 存储用户的可执行文件或链接</span></span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="string">"export PATH=/home/ruser/bin"</span> &gt;&gt; /home/ruser/.bash_profile</span><br><span class="line">&gt; ln -s /user/bin/ftp /home/ruser/bin/ftp</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h1><ul>
+<li><a href="http://www.linuxfromscratch.org/blfs/view/6.3/postlfs/profile.html" target="_blank" rel="noopener">The Bash Shell Startup Files</a></li>
+<li><a href="http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_03_01.html" target="_blank" rel="noopener">Shell initialization files</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/04/06/bash/mechanism/%E5%88%9D%E5%A7%8B%E5%8C%96/" data-id="ck8oiuufk0001e6axa6keco2p" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/04/06/bash/mechanism/%E5%AD%90shell/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          bash/mechanism/子shell
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/04/06/bash/mechanism/%E4%BD%9C%E4%B8%9A%E6%8E%A7%E5%88%B6/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">bash/mechanism/作业控制</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/">bash/mechanism/信号处理</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E7%A7%8D%E7%B1%BB/">bash/mechanism/命令的种类</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F/">bash/mechanism/命令的执行方式</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/">bash/mechanism/自动补全</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E5%AD%90shell/">bash/mechanism/子shell</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>bash/mechanism/信号处理 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Linux 中的信号信号( Signal )是操作系统中常用的进程通信手段, 主要用来描述特定事件的发生, 进程接收到信号时有以下几种处理方式:  捕获并自定义处理函数: 给 signal 系统调用传递自定义回调函数, 进程在接收到信号时会执行该回调函数. 忽略信号: 给 signal 系统调用传递 SIG_IGN , 内核会直接丢弃该信号, 因此目标进程不会收到该信号. 执行默认操作: 内核对每">
+<meta property="og:type" content="article">
+<meta property="og:title" content="bash&#x2F;mechanism&#x2F;信号处理">
+<meta property="og:url" content="http://yoursite.com/2020/04/06/bash/mechanism/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Linux 中的信号信号( Signal )是操作系统中常用的进程通信手段, 主要用来描述特定事件的发生, 进程接收到信号时有以下几种处理方式:  捕获并自定义处理函数: 给 signal 系统调用传递自定义回调函数, 进程在接收到信号时会执行该回调函数. 忽略信号: 给 signal 系统调用传递 SIG_IGN , 内核会直接丢弃该信号, 因此目标进程不会收到该信号. 执行默认操作: 内核对每">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-06T13:38:57.641Z">
+<meta property="article:modified_time" content="2020-04-04T03:31:05.000Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-bash/mechanism/信号处理" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/06/bash/mechanism/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/" class="article-date">
+  <time datetime="2020-04-06T13:38:57.641Z" itemprop="datePublished">2020-04-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      bash/mechanism/信号处理
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Linux-中的信号"><a href="#Linux-中的信号" class="headerlink" title="Linux 中的信号"></a>Linux 中的信号</h1><p>信号( <code>Signal</code> )是操作系统中常用的进程通信手段, 主要用来描述特定事件的发生, 进程接收到信号时有以下几种处理方式:</p>
+<ul>
+<li>捕获并自定义处理函数: 给 <code>signal</code> 系统调用传递自定义回调函数, 进程在接收到信号时会执行该回调函数.</li>
+<li>忽略信号: 给 <code>signal</code> 系统调用传递 <code>SIG_IGN</code> , 内核会直接丢弃该信号, 因此目标进程不会收到该信号.</li>
+<li>执行默认操作: 内核对每个信号定义了默认的处理方式, 如果已经给信号设置了忽略或自定义处理函数, 可以给 <code>signal</code> 系统调用传递 <code>SIG_DFL</code> 将该信号的处理方式恢复为默认.</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">signal(SIGINT, SIG_IGN);  <span class="comment">// 忽略信号</span></span><br><span class="line">signal(SIGTERM, SIG_DFL);  <span class="comment">// 恢复信号</span></span><br><span class="line">signal(SIGSTOP, m_handler);  <span class="comment">// 自定义信号</span></span><br></pre></td></tr></table></figure>
+
+<p>在 <code>Linux</code> 中, 信号的发送依赖于 <code>sigqueue</code> , <code>kill</code> , <code>raise</code> 系统调用, 信号的处理状态被记录在目标进程的 <code>task_struct</code> 的 <code>signal</code> 变量中, 该变量的类型为 <code>sigset_t</code> , 每一位存储一个信号的处理状态, 因此又被称为信号位图( <code>signal bitmap</code> ). 处于产生( <code>generate</code> )和递送( <code>delivery</code> )之间的信号状态会被标记为未决( <code>pending</code> ). 当目标进程短时间内接收到大量重复的信号或使用 <code>sigpending</code> 系统调用阻塞某个信号时, 目标进程信号位图中该信号的状态就会变为未决. 在 <code>Linux 5.3.0</code> 中对处于未决状态的信号有两种处理策略:</p>
+<ul>
+<li>丢弃: 如果目标进程中某种信号的状态为<strong>未决或忽略</strong>, 内核会直接丢弃之后产生的所有该种信号, 直到该信号的状态改变. 这是早期的 <code>Unix</code> 系统中的处理策略, 为了保证兼容性, <code>Linux 5.3.0</code> 中编号为 <code>1-31</code> 的信号遵循丢弃处理策略, 即使用 <code>sigqueue</code> 发送这些信号, 它们也不会去排队. 因存在丢失信号的可能, 按丢失策略处理的信号被称为不可靠信号, 按照 <code>POSIX</code> 则被称为非实时信号.</li>
+<li>排队: 在 <code>Linux</code> 中对信号的处理方式做了改进, 内核会在目标进程的 <code>task_struct</code> 的中维护一个信号队列, 如果内核接收到了一个信号, 且目标进程中该信号的状态为<strong>未决</strong>, 则会将这个新产生的信号放入目标进程的信号队列中, 这样只要挂起的信号个数没有超过内核设定的上限, 理论上就不会丢失. <code>Linux 5.3.0</code> 中编号为 <code>32-64</code> 的信号遵循排队处理策略, 因此又被称为可靠信号, 按照 <code>POSIX</code> 则被称为实时信号.</li>
+</ul>
+<h2 id="常用信号"><a href="#常用信号" class="headerlink" title="常用信号"></a>常用信号</h2><p>大多数 <code>Linux</code> 发行版可以通过 <code>man 7 signal</code> 查看当前系统中支持的信号种类, <code>kill -l</code> 可以查看所有信号及其对应的数字. 其中我们常用的有:</p>
+<ul>
+<li><code>(2) SIGINT</code> : 给处在前台的正在运行的进程发送的键盘中断信号, 终止( <code>interrupt</code> )其运行, 一般对应 <code>Ctrl + C</code> .</li>
+<li><code>(19) SIGSTOP</code> : 不可忽略的暂停信号, 是一种以编程方式发送的信号.</li>
+<li><code>(20) SIGTSTP</code> : 暂停信号, 将当前任务 <code>stop</code> 并放到后台, 把控制权交给 <code>shell</code> , 一般对应 <code>Ctrl + Z</code> </li>
+<li><code>(9) SIGKILL</code> : 不可被被阻塞, 处理和忽略的信号, 一般用于强行杀死某个进程, <code>kill -9 &lt;pid&gt;</code> </li>
+<li><code>(15) SIGTERM</code> : 程序结束( <code>terminate</code> )信号, 与 <code>SIGKILL</code> 不同的是该信号可以被阻塞和处理. 通常用来要求程序自己正常退出. <code>shell</code> 命令 <code>kill</code> 缺省产生这个信号。</li>
+<li><code>(14) SIGALRM</code> : </li>
+<li><code>(1) SIGHUP</code> : 本信号在用户终端连接(正常或非正常)结束时发出, 通常是在终端的控制进程结束时, 通知同一 <code>session</code> 内的各个作业, 这时它们与控制终端不再关联。 登录 <code>Linux</code> 时，系统会分配给登录用户一个终端( <code>Session</code> )。在这个终端运行的所有程序，包括前台进程组和后台进程组，一般都属于这个 <code>Session</code> 。当用户退出 <code>Linux</code> 登录时，前台进程组和后台有对终端输出的进程将会收到 <code>SIGHUP</code> 信号。这个信号的默认操作为终止进程，因此前台进程组和后台有终端输出的进程就会中止。对于与终端脱离关系的守护进程，这个信号用于通知它重新读取配置文件。</li>
+</ul>
+<h1 id="在-bash-中处理信号"><a href="#在-bash-中处理信号" class="headerlink" title="在 bash 中处理信号"></a>在 bash 中处理信号</h1><p><code>bash</code> 中的一个典型的应用场景是通过内置命令 <code>kill</code> 向指定进程发送信号, 默认发送 <code>SIGTERM</code> 信号. 例如: 退出所有名称为 <code>chrome</code> 的进程:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">kill</span> `pgrep chrome` </span><br><span class="line">&gt; killall chrome</span><br><span class="line">&gt; <span class="built_in">kill</span> `ps -ef | grep chrome | awk <span class="string">'&#123; print $2 &#125;'</span>` </span><br><span class="line">&gt; <span class="built_in">kill</span> `pidof chrome`</span><br></pre></td></tr></table></figure>
+
+<p>此外, 还可以使用 <code>trap</code> 对信号进行捕捉, 从而实现对特定信号的处理, 其语法如下.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">trap</span> [COMMANDS] [SIGNALS]</span><br></pre></td></tr></table></figure>
+
+<p><code>trap</code> 在捕捉到信号之后会执行设置的命令, 这里的命令可以是任何有效的Linux命令，或一个用户定义的函数. 在 <code>shell</code> 脚本中, <code>trap</code> 可以被用于在退出时清除临时文件, 例如:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">tempfile=$(mktemp) || <span class="built_in">exit</span></span><br><span class="line"><span class="built_in">trap</span> <span class="string">'rm -f "$tempfile"'</span> EXIT</span><br></pre></td></tr></table></figure>
+
+<p>另一种经典的用法是在守护进程中, 捕捉 <code>SIGHUP</code> 并重读配置文件, 例如:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ ! -r <span class="string">"<span class="variable">$1</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"Usage: <span class="variable">$0</span> &lt;cfg-file-path&gt;"</span></span><br><span class="line">    <span class="built_in">exit</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"PID: $"</span></span><br><span class="line"></span><br><span class="line">CONFIG=<span class="variable">$1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">read_config</span></span> () &#123; </span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"reading cfg from <span class="variable">$CONFIG</span>"</span></span><br><span class="line">    <span class="built_in">source</span> <span class="string">"<span class="variable">$CONFIG</span>"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">read_config</span><br><span class="line"><span class="built_in">trap</span> <span class="string">"read_config"</span> HUP</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> :</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"<span class="variable">$var</span>"</span></span><br><span class="line">    sleep 15</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来我们可以在两个终端中进行测试:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 终端一</span></span><br><span class="line">&gt; bash remove_temp.sh ./config/cfg1 </span><br><span class="line">PID: 8807</span><br><span class="line">reading cfg from ./config/cfg1</span><br><span class="line">from cfg1</span><br><span class="line">reading cfg from ./config/cfg1</span><br><span class="line">after change</span><br><span class="line"></span><br><span class="line"><span class="comment"># 终端二</span></span><br><span class="line">&gt; cat &gt; cfg1 &lt;&lt; EOF</span><br><span class="line">var=<span class="string">"after change"</span></span><br><span class="line">EOF</span><br><span class="line">&gt; <span class="built_in">kill</span> -s HUP 8807</span><br></pre></td></tr></table></figure>
+
+<p>通过 <code>trap</code> 命令也可以保存与重设信号, 例如:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">trap</span> <span class="string">"printf BOOM"</span> INT</span><br><span class="line">&gt; ^CBOOM</span><br><span class="line">&gt; traps=$(<span class="built_in">trap</span>)  <span class="comment"># 保存信号处理方式</span></span><br><span class="line">&gt; <span class="built_in">trap</span> INT  <span class="comment"># 重设信号为默认处理方式</span></span><br><span class="line">&gt; ^C</span><br><span class="line">&gt; <span class="built_in">eval</span> <span class="variable">$traps</span>  <span class="comment"># 加载信号处理方法</span></span><br><span class="line">&gt; ^CBOOM</span><br></pre></td></tr></table></figure>
+
+<p><code>trap</code> 还支持捕捉多个信号, 例如:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">trap</span> <span class="string">"echo Boom!"</span> SIGINT SIGTERM</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$PPID</span> $</span><br><span class="line"><span class="keyword">while</span> : <span class="comment"># 冒号永远为真 也可作为占位符</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    sleep 60</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+<p><code>trap</code> 对大小写不敏感, 而且可以忽略前缀 <code>SIG</code> , 以下写法是等价的:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">trap &quot;echo 123&quot; SIGINT</span><br><span class="line">trap &quot;echo 123&quot; INT </span><br><span class="line">trap &quot;echo 123&quot; 2</span><br><span class="line">trap &quot;echo 123&quot; int </span><br><span class="line">trap &quot;echo 123&quot; Int</span><br></pre></td></tr></table></figure>
+
+<h2 id="特殊情况"><a href="#特殊情况" class="headerlink" title="特殊情况"></a>特殊情况</h2><p><code>bash</code> 在执行外部命令时, 会提高前台任务的信号处理优先级, 当前台任务执行完毕或被终止时, <code>bash</code> 才会处理刚才收到的信号, 如下例:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 终端一</span></span><br><span class="line">&gt; sleep 100  <span class="comment"># 这是个外部命令</span></span><br><span class="line"><span class="comment"># 在阻塞中...</span></span><br><span class="line"></span><br><span class="line">&gt;  <span class="comment"># 100秒之后打印了一个空行并显示提示符</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 终端二</span></span><br><span class="line"><span class="comment"># 查看终端一的进程树</span></span><br><span class="line">&gt; pstree -ap 16003</span><br><span class="line">bash,16003</span><br><span class="line">  `-sleep,17249 100  <span class="comment"># 外部命令在子进程中执行</span></span><br><span class="line">&gt; <span class="built_in">kill</span> -s INT 16003  <span class="comment"># 让终端一的 bash 打印空行</span></span><br></pre></td></tr></table></figure>
+
+<p>但要注意, 在 <code>shell</code> 中使用 <code>Ctrl + C</code> 会对整个进程组发送 <code>SIGINT</code> , 因此在上例中如果在终端一中使用 <code>Ctrl + C</code> 会导致 <code>sleep</code> 立即结束, 并打印一个空行. 我们也可以把前台任务放到后台来让 <code>bash</code> 优先处理信号, 但如果 <code>bash</code> 退出时仍有未完成的后台任务, 则这些任务会变为孤儿进程, 它们的父进程会变为 <code>PID=1</code> 的 <code>init</code> 进程:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&gt; (sleep 50 &amp; sleep 50 &amp; <span class="built_in">wait</span>)</span><br><span class="line"><span class="comment"># 进程树</span></span><br><span class="line">bash,15158</span><br><span class="line">  `-bash,7629</span><br><span class="line">      |-sleep,7630 50</span><br><span class="line">      `-sleep,7631 50</span><br><span class="line">&gt; <span class="built_in">kill</span> 7629</span><br><span class="line"><span class="comment"># 进程树</span></span><br><span class="line">bash,15158</span><br><span class="line">&gt; ps -ef | grep <span class="string">"sleep 50"</span></span><br><span class="line">remilia  11168     1  0 16:56 pts/2    00:00:00 sleep 50</span><br><span class="line">remilia  11169     1  0 16:56 pts/2    00:00:00 sleep 50</span><br><span class="line"><span class="comment"># 第三列是 PPID, 已经变成 1 了</span></span><br></pre></td></tr></table></figure>
+
+<p>如果需要在进程退出时将后台任务也终止, 则需要记录后台任务的 <code>PID</code> 并在退出前将这些进程 <code>kill</code> :</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/bash</span></span><br><span class="line"></span><br><span class="line">BPIDARRAY=()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> &#123;0..9&#125;; <span class="keyword">do</span></span><br><span class="line">  sleep 20 &amp;</span><br><span class="line">  BPIDARRAY[<span class="variable">$i</span>]=$!</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">sleep 3</span><br><span class="line"><span class="built_in">trap</span> <span class="string">"kill `echo <span class="variable">$&#123;BPIDARRAY[@]&#125;</span>` "</span> EXIT</span><br><span class="line"><span class="built_in">wait</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="其他用法"><a href="#其他用法" class="headerlink" title="其他用法"></a>其他用法</h2><p><code>trap</code> 不仅可以捕捉定义在 <code>&lt;signal.h&gt;</code> 中的信号名或者数值, 还支持以下用法:</p>
+<ul>
+<li><code>trap -l</code> : 类似于 <code>kill -l</code> , 用于列出当前系统支持的所有信号.</li>
+<li><code>trap -p</code> 或 <code>trap</code> : 列出通过trap设置的信号处理命令.</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">trap</span> -p</span><br><span class="line"><span class="built_in">trap</span> -- <span class="string">'code'</span> EXIT</span><br><span class="line"><span class="built_in">trap</span> -- <span class="string">'echo SIGINT'</span> SIGINT</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>trap &quot;some code&quot; EXIT</code> : 仅在 <code>shell</code> 中可用的编号为 <code>0</code> 的特殊信号, 在 <code>bash</code> 中代表处理所有的退出情况, 而在标准 <code>shell</code> 中则用于捕捉 <code>exit</code> .</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; trap &quot;code&quot; EXIT</span><br><span class="line">&gt; ^D  # 退出终端的同时会打开 vscode</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>trap &quot;some code&quot; ERR</code> : 捕捉执行出现错误的命令, 在命令执行出现错误时执行预定义的代码块.</li>
+<li><code>trap &quot;some code&quot; DEBUG</code> : 以调试模式执行命令时, 将在每个命令执行前执行预定义的代码块.</li>
+</ul>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p><code>trap</code> 设置只作用于当前进程, 因此要注意除了通过 <code>.</code> 或 <code>source</code> 执行的脚本都会产生 <code>child shell</code> , 这些脚本中不会继承当前 <code>shell</code> 设置的 <code>trap</code> :</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">trap</span> <span class="string">"printf book"</span> 2</span><br><span class="line">&gt; ^Cbook</span><br><span class="line">&gt; bash -c <span class="string">"trap -p"</span>  <span class="comment"># 无输出</span></span><br><span class="line">&gt; bash</span><br><span class="line">&gt; ^C  <span class="comment"># 对子进程无效</span></span><br></pre></td></tr></table></figure>
+
+<p>在函数中设置的 <code>trap</code> 也是全局生效的, 重复设置同一个信号则只有最后一次 <code>trap</code> 有效. 需要特别注意的是, 在 <code>bash</code> 脚本中或者非交互式 <code>bash shell</code> 中捕获 <code>SIGINT</code> 和 <code>SIGQUIT</code> 时最好按照如下方式:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">trap</span> <span class="string">'rm -f "$tempfile"; trap - INT; kill -s INT "$"'</span> INT</span><br></pre></td></tr></table></figure>
+
+<p><code>bash</code> 在接收到退出信号时按照 <code>WCE (wait and cooperative exit)</code> 原则进行处理, 按下 <code>Ctrl + C</code> 时, 当前进程组都会收到 <code>SIGINT</code> , 这样就有以下几种情况(不考虑忽略信号的情况):</p>
+<ul>
+<li>前台子进程处理 <code>SIGINT</code> :<ul>
+<li>处理信号然后自己 <code>kill</code> , 这样父 <code>bash</code> (调用者)就会接收到子进程通过信号非正常退出, 则立即退出当前脚本.</li>
+<li>处理信号并用 <code>exit</code> 正常退出, 这样父 <code>bash</code> (调用者)就认为子进程正常执行完毕, 从而继续解释脚本.</li>
+</ul>
+</li>
+<li>前台子进程不处理 <code>SIGINT</code> : 这种情况与处理信号并自己 <code>kill</code> 相似, 父 <code>bash</code> (调用者)会立即退出当前脚本.</li>
+</ul>
+<p>举例来说, 考虑下面这个脚本:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt; cat ping_loop.sh</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> `seq 254` ;  <span class="keyword">do</span></span><br><span class="line">    ping -c 2 <span class="string">"192.168.1.<span class="variable">$i</span>"</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line">&gt; bash ping_loop.sh</span><br><span class="line"><span class="comment"># 如果这样执行, 你需要按 254 次 Ctrl + C 才能完全退出</span></span><br><span class="line"><span class="comment"># 注意这个是 bash 的特性</span></span><br></pre></td></tr></table></figure>
+
+<p>在上例中, 按下 <code>Ctrl + C</code> 时, <code>ping</code> 先收到 <code>SIGINT</code> 并处理然后正常退出, 之后 <code>bash</code> 也会收到 <code>SIGINT</code> 和上一条命令( <code>ping 192.168.0.1</code> )的退出状态, 发现正常退出因此继续解释之后的命令. 而对于 <code>sleep</code> 这种对 <code>SIGINT</code> 信号进行默认处理的命令, 情况则完全不同:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt; cat sleep_loop.sh</span><br><span class="line">i=1</span><br><span class="line"><span class="keyword">while</span> [ <span class="string">"<span class="variable">$i</span>"</span> -le 100 ]; <span class="keyword">do</span></span><br><span class="line">  <span class="built_in">printf</span> <span class="string">"%d "</span> <span class="string">"<span class="variable">$i</span>"</span></span><br><span class="line">  i=$((i+1))</span><br><span class="line">  sleep 10</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"><span class="built_in">echo</span></span><br><span class="line"></span><br><span class="line">&gt; bash sleep_loop.sh</span><br><span class="line"><span class="comment"># 如果这样执行, 按一次 Ctrl + C 就可以退出脚本</span></span><br></pre></td></tr></table></figure>
+
+<p>在上例中, 按下 <code>Ctrl + C</code> 时, <code>sleep</code> 先收到 <code>SIGINT</code> 并按照默认方式处理, 之后 <code>bash</code> 也会收到 <code>SIGINT</code> 和上一条命令( <code>sleep 10</code> )的退出状态, 发现 <code>sleep</code> 非正常退出因此 <code>bash</code> 立即退出. 我们可以通过更简单的命令加深理解:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&gt; (ping 192.168.0.1; ping 192.168.0.2)</span><br><span class="line">bash,7744  </span><br><span class="line"> `-bash,24002  </span><br><span class="line">     `-ping,24011 192.168.0.1</span><br><span class="line"></span><br><span class="line">&gt; <span class="built_in">kill</span> -2 24011 24002  <span class="comment"># 在另一个终端执行</span></span><br><span class="line"><span class="comment"># 由于 ping 会处理 SIGINT 并返回 0, 表示自己正常退出</span></span><br><span class="line"><span class="comment"># bash 24002 认为 ping 24026 正常退出就解释下一条命令</span></span><br><span class="line"><span class="comment"># 进程树会变成下面这样</span></span><br><span class="line">bash,7744  </span><br><span class="line"> `-bash,24002</span><br><span class="line">     `-ping,24026 192.168.0.2</span><br><span class="line"></span><br><span class="line">&gt; (sleep 50; sleep 50)</span><br><span class="line">bash,7744</span><br><span class="line">  `-bash,26053</span><br><span class="line">      `-sleep,26054 50</span><br><span class="line">&gt; <span class="built_in">kill</span> -2 26054 26053</span><br><span class="line"><span class="comment"># sleep 会以默认方式处理 SIGINT 信号</span></span><br><span class="line"><span class="comment"># 因此 bash 26053 会收到子进程因为 SIGINT 非正常退出的信息</span></span><br><span class="line"><span class="comment"># bash 26053 将立即退出</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h1><ul>
+<li><a href="http://mywiki.wooledge.org/SignalTrap" target="_blank" rel="noopener">Signal Trap</a></li>
+</ul>
+<p><a href="http://redsymbol.net/articles/bash-exit-traps/" target="_blank" rel="noopener">How “Exit Traps” Can Make Your Bash Scripts Way More Robust And Reliable</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/04/06/bash/mechanism/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/" data-id="ck8oiuufn0005e6ax0au78hj8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E7%A7%8D%E7%B1%BB/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">bash/mechanism/命令的种类</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/">bash/mechanism/信号处理</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E7%A7%8D%E7%B1%BB/">bash/mechanism/命令的种类</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F/">bash/mechanism/命令的执行方式</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/">bash/mechanism/自动补全</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E5%AD%90shell/">bash/mechanism/子shell</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

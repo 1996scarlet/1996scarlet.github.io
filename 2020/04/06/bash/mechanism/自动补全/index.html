@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>bash/mechanism/自动补全 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="自动补全原理使用 TAB 键可以根据已输入的字符自动补全路径名、文件名和可执行程序，自动补全依赖于 bash-completion 在 &#x2F;etc&#x2F;bash_completion.d&#x2F; 路径下创建的自动补全脚本。 实现简单的参数自动补全实现自动补全需要使用内置命令 compgen 和 complete 以及 bash 提供的内置的补全变量，我们先看下面这个例子： 12345678#!&#x2F;usr&#x2F;bin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="bash&#x2F;mechanism&#x2F;自动补全">
+<meta property="og:url" content="http://yoursite.com/2020/04/06/bash/mechanism/%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="自动补全原理使用 TAB 键可以根据已输入的字符自动补全路径名、文件名和可执行程序，自动补全依赖于 bash-completion 在 &#x2F;etc&#x2F;bash_completion.d&#x2F; 路径下创建的自动补全脚本。 实现简单的参数自动补全实现自动补全需要使用内置命令 compgen 和 complete 以及 bash 提供的内置的补全变量，我们先看下面这个例子： 12345678#!&#x2F;usr&#x2F;bin">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-06T13:38:57.641Z">
+<meta property="article:modified_time" content="2020-04-04T05:24:37.000Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-bash/mechanism/自动补全" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/06/bash/mechanism/%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/" class="article-date">
+  <time datetime="2020-04-06T13:38:57.641Z" itemprop="datePublished">2020-04-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      bash/mechanism/自动补全
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="自动补全原理"><a href="#自动补全原理" class="headerlink" title="自动补全原理"></a>自动补全原理</h1><p>使用 <code>TAB</code> 键可以根据已输入的字符自动补全<strong>路径名</strong>、<strong>文件名</strong>和<strong>可执行程序</strong>，自动补全依赖于 <code>bash-completion</code> 在 <code>/etc/bash_completion.d/</code> 路径下创建的自动补全脚本。</p>
+<h2 id="实现简单的参数自动补全"><a href="#实现简单的参数自动补全" class="headerlink" title="实现简单的参数自动补全"></a>实现简单的参数自动补全</h2><p>实现自动补全需要使用内置命令 <code>compgen</code> 和 <code>complete</code> 以及 <code>bash</code> 提供的内置的补全变量，我们先看下面这个例子：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/bash</span></span><br><span class="line"><span class="comment"># 脚本1： vtb.bash</span></span><br><span class="line">_vtb()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">local</span> cur=<span class="variable">$&#123;COMP_WORDS[COMP_CWORD]&#125;</span></span><br><span class="line">    COMPREPLY=( $(compgen -W <span class="string">"mea aqua alice"</span> -- <span class="variable">$cur</span>) )</span><br><span class="line">&#125;</span><br><span class="line">complete -F _vtb vtb</span><br></pre></td></tr></table></figure>
+
+<p>赋予执行权限并测试：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> chmod +x vtb.bash</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">source</span> vtb.bash</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> vtb &lt;TAB&gt; &lt;TAB&gt;</span></span><br><span class="line">alice  aqua   mea</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> vtb a &lt;TAB&gt; &lt;TAB&gt;</span></span><br><span class="line">alice  aqua</span><br></pre></td></tr></table></figure>
+
+<p>现在 <code>vtb</code> 这个命令已经具有了参数补全的功能，不难发现其给出的选项来自于 <code>_vtb</code> 函数中的 <code>COMPREPLY</code> 数组。</p>
+<h2 id="内置补全变量表"><a href="#内置补全变量表" class="headerlink" title="内置补全变量表"></a>内置补全变量表</h2><table>
+<thead>
+<tr>
+<th>变量名</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>COMP_WORDS</td>
+<td>类型为数组，存放当前命令行中输入的所有单词</td>
+</tr>
+<tr>
+<td>COMP_CWORD</td>
+<td>类型为整数，当前光标所在位置的单词在COMP_WORDS中的索引</td>
+</tr>
+<tr>
+<td>COMPREPLY</td>
+<td>类型为数组，候选的补全结果</td>
+</tr>
+<tr>
+<td>COMP_WORDBREAKS</td>
+<td>类型为字符串，表示单词之间的分隔符</td>
+</tr>
+<tr>
+<td>COMP_LINE</td>
+<td>类型为字符串，表示当前的命令行输入字符</td>
+</tr>
+<tr>
+<td>COMP_POINT</td>
+<td>类型为整数，表示光标在当前命令行的哪个位置</td>
+</tr>
+</tbody></table>
+<h2 id="理解-compgen-W"><a href="#理解-compgen-W" class="headerlink" title="理解 compgen -W"></a>理解 <code>compgen -W</code></h2><p>在 <code>脚本1</code> 的 <code>_vtb</code> 函数中，我们首先定义了 <code>cur</code> 变量用于获取<strong>当前光标所在位置的单词</strong>，将其作为参数传递给 <code>compgen -W</code> 命令。该命令接受两个参数，定义与使用方式如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># compgen -W &lt;word_list&gt; &lt;comp_word&gt;</span></span><br><span class="line">&gt; compgen -W <span class="string">"aqua alice mea"</span> -- a  <span class="comment"># 省略‘--’则不会输出多行</span></span><br><span class="line">aqua</span><br><span class="line">alice</span><br></pre></td></tr></table></figure>
+
+<p><code>compgen</code> 命令的作用是完成候选词的<strong>筛选</strong>， <code>-W</code> 模式代表从 <code>&lt;word_list&gt;</code> 中获得候选词，然后通过 <code>&lt;comp_word&gt;</code> 参数对候选词进行筛选，最后我们将筛选得到的结果存入 <code>COMPREPLY</code> 数组中。</p>
+<h2 id="理解-complete-F"><a href="#理解-complete-F" class="headerlink" title="理解 complete -F"></a>理解 <code>complete -F</code></h2><p>我们在 <code>脚本1</code> 中使用了 <code>complete</code> 命令的 <code>-F</code> 模式让 <code>vtb</code> 命令能够获取 <code>_vtb</code> 函数中的候选补全结果 <code>COMPREPLY</code> ，其本质就是完成候选词的<strong>绑定</strong>。我们先以简单的 <code>-W</code> 模式为例进行讲解，其定义与使用方式如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># complete -W &lt;word_list&gt; &lt;comp_cmd&gt;</span></span><br><span class="line">&gt; complete -W <span class="string">"aa ab cd"</span> test_comp</span><br><span class="line">&gt; test_comp &lt;TAB&gt; &lt;TAB&gt;</span><br><span class="line">aa    ab    <span class="built_in">cd</span></span><br><span class="line">&gt; test_comp a &lt;TAB&gt; &lt;TAB&gt;</span><br><span class="line">aa    ab</span><br></pre></td></tr></table></figure>
+
+<p><code>complete</code> 命令可以给 <code>&lt;comp_cmd&gt;</code> 绑定候选词列表，根据不同的命令模式（ <code>-F -W -C -G</code> ）会有不同的构建候选词列表的方式。 <code>-W</code> 模式通过字符串构建候选词列表，而 <code>-F</code> 模式需要使用 <code>COMPREPLY</code> 构造候选词列表，其定义与使用方式如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">complete -F &lt;func_name&gt; &lt;comp_cmd&gt;     <span class="comment"># 绑定候选词列表</span></span><br><span class="line">&lt;comp_cmd&gt; &lt;comp_word&gt; &lt;TAB&gt; &lt;TAB&gt;     <span class="comment"># 筛选候选词列表</span></span><br></pre></td></tr></table></figure>
+
+<p>该命令可以实现 <code>&lt;func_name&gt;</code> 与 <code>&lt;comp_cmd&gt;</code> 的绑定， <code>&lt;func_name&gt;</code> 函数中必须通过 <code>COMPREPLY</code> 构造候选词列表，而是否使用 <code>compgen</code> 或其他方式进行候选词筛选取决于业务逻辑。相比于其他模式， <code>-F</code> 模式能够提供更灵活的自动补全策略，以 <code>脚本1</code> 为例，我们通过组合使用 <code>compgen</code> 、 <code>complete</code> 和内置补全变量实现了类似 <code>-W</code> 模式的功能。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/04/06/bash/mechanism/%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/" data-id="ck8oiuufl0003e6ax9r1a3kcu" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          bash/mechanism/命令的执行方式
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/04/06/bash/mechanism/%E5%AD%90shell/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">bash/mechanism/子shell</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/">bash/mechanism/信号处理</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E7%A7%8D%E7%B1%BB/">bash/mechanism/命令的种类</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F/">bash/mechanism/命令的执行方式</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/">bash/mechanism/自动补全</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E5%AD%90shell/">bash/mechanism/子shell</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

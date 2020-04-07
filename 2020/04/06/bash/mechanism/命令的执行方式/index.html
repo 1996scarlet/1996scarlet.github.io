@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>bash/mechanism/命令的执行方式 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="基础知识fork-exec 模式在 Linux 系统中，所有的进程（包括 PID&#x3D;1 的 init 进程，但不包括 PID&#x3D;0 的调度进程）的创建都遵循 fork-exec 模式。  fork ：作为进程创建的第一阶段，其作用为将父进程的地址空间（代码段[只拷贝引用]、数据段、堆、栈）全部拷贝给子进程，父进程调用 fork 之后由内核进行操作，创建完之后给父进程返回创建好的子进程的 PID ，给子">
+<meta property="og:type" content="article">
+<meta property="og:title" content="bash&#x2F;mechanism&#x2F;命令的执行方式">
+<meta property="og:url" content="http://yoursite.com/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="基础知识fork-exec 模式在 Linux 系统中，所有的进程（包括 PID&#x3D;1 的 init 进程，但不包括 PID&#x3D;0 的调度进程）的创建都遵循 fork-exec 模式。  fork ：作为进程创建的第一阶段，其作用为将父进程的地址空间（代码段[只拷贝引用]、数据段、堆、栈）全部拷贝给子进程，父进程调用 fork 之后由内核进行操作，创建完之后给父进程返回创建好的子进程的 PID ，给子">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-06T13:38:57.641Z">
+<meta property="article:modified_time" content="2020-04-06T06:06:37.000Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-bash/mechanism/命令的执行方式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F/" class="article-date">
+  <time datetime="2020-04-06T13:38:57.641Z" itemprop="datePublished">2020-04-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      bash/mechanism/命令的执行方式
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="fork-exec-模式"><a href="#fork-exec-模式" class="headerlink" title="fork-exec 模式"></a><code>fork-exec</code> 模式</h2><p>在 <code>Linux</code> 系统中，所有的进程（包括 <code>PID=1</code> 的 <code>init</code> 进程，但不包括 <code>PID=0</code> 的调度进程）的创建都遵循 <code>fork-exec</code> 模式。</p>
+<ul>
+<li><code>fork</code> ：作为进程创建的第一阶段，其作用为将父进程的<strong>地址空间</strong>（代码段[只拷贝引用]、数据段、堆、栈）全部拷贝给子进程，父进程调用 <code>fork</code> 之后由内核进行操作，创建完之后给父进程返回创建好的子进程的 <code>PID</code> ，给子进程返回 <code>0</code> （子进程的 <code>task_struct</code> 中会记录父进程的 <code>PID</code> ）。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 父进程与子进程共享代码段</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;  // fork()的原型在这个头文件中</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> pid = fork();</span><br><span class="line"><span class="keyword">if</span> (pid == <span class="number">-1</span> )  <span class="comment">// 返回-1，说明fork失败  </span></span><br><span class="line">&#123;</span><br><span class="line">    perror(<span class="string">"fork"</span>);  </span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);  </span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (pid &gt; <span class="number">0</span>)  <span class="comment">// 返回子进程pid，说明是父进程</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"parent PID = %d\n"</span>, getpid());</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (pid == <span class="number">0</span>)  <span class="comment">// 返回0，说明是子进程</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"child PID = %d, PPID = %d\n"</span>, getpid(), getppid());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>[danger]<strong>危险</strong>：在 <code>Linux</code> 系统中，父进程执行 <code>fork</code> 只会复制<strong>发起调用的线程</strong>的信息，其他线程在子进程中会立即停止并消失，并且默认不会为这些线程调用清理函数以及针对线程局部存储变量的析构函数（可能引发死锁），关于这部分的详细内容会在第二章进行说明。</p>
+</blockquote>
+<ul>
+<li><code>exec</code> ：作为进程创建过程中可选的第二阶段，如果我们需要在子进程空间里面运行全新的代码，可以使用 <code>exec</code> 函数族将新程序的代码段<strong>加载</strong>到子进程的地址空间。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (pid == <span class="number">0</span>)  <span class="comment">//返回0，说明是子进程</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">char</span>  *argv[] = &#123;<span class="string">"ls"</span>, <span class="string">"-al"</span>, <span class="string">"/etc/passwd"</span>, (<span class="keyword">char</span> *)<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">char</span>  *envp[] = &#123;<span class="string">"PATH=/bin"</span>, <span class="number">0</span>&#125;;</span><br><span class="line">    <span class="comment">// 只有execve是系统调用，其他exec函数都是它的包装</span></span><br><span class="line">    execve(<span class="string">"/bin/ls"</span>, argv, envp);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>[info]<strong>提示</strong>：由于写时拷贝（copy-on-write）技术的引入，在调用 <code>fork</code> 时，内核并不会立即拷贝整个父进程的地址空间给子进程（只读共享），而是在需要写入时才会拷贝，因此在 <code>fork</code> 之后立即调用 <code>exec</code> 就可以显著提升进程创建的效率 。</p>
+</blockquote>
+<p>首先说一下fork和vfork的差别：fork  是 创建一个子进程，并把父进程的内存数据copy到子进程中。vfork是 创建一个子进程，并和父进程的内存数据share一起用。这两个的差别是，一个是copy，一个是share。你 man vfork 一下，你可以看到，vfork是这样的工作的，1）保证子进程先执行。2）当子进程调用exit()或exec()后，父进程往下执行。那么，为什么要干出一个vfork这个玩意？  原因是这样的—— 起初只有fork，但是很多程序在fork一个子进程后就exec一个外部程序，于是fork需要copy父进程的数据这个动作就变得毫无意了，而且还很重，所以，搞出了个父子进程共享的vfork。所以，vfork本就是为了exec而生。</p>
+<p>就是fork后来采用的优化技术，这样，对于fork后并不是马上拷贝内存，而是只有你在需要改变的时候，才会从父进程中拷贝到子进程中，这样fork后立马执行exec的成本就非常小了。而vfork因为共享内存所以比较危险，所以，Linux的Man Page中并不鼓励使用vfork()</p>
+<p>实际存在fork, clone, vfork 三个系统调用。fork是完全复制，clone则是有选择的复制，vfork则完全使用父进程的资源。</p>
+<p>main函数并不是开始，之前有个函数(至少gcc是这样，别的不懂)，姑且叫start，start函数里初始化一些我也不知道是什么的貌似并没有什么卵用的东西，然后调用main，return是函数的返回，main的return就返回到start，exit是退出进程，善后，然后自杀，参数是返回到调用进程的，比如shell，</p>
+<p>每个C程序的入口点_start处的代码用伪代码表示为<br>_start:<br>call __libc_init_first // 一些初始化<br>call _init<br>call atexit<br>call main<br>call _exit<br>从伪代码就看出来了，每个C程序都要在执行一些初始化函数后对main调用，若main末尾为return语句，那么控制返回，最终会call _exit，把控制返回系统。若省略return，那么也将会call _exit。如果代码中有exit函数，那么会先执行atexit注册的函数，进而执行_exit()把控制还给操作系统。总之，这些情况下，当main返回，控制会传给系统</p>
+<blockquote>
+<p>[success]<strong>技巧</strong>：在 <code>Linux 2.6.32</code> 版本之后提供了配置文件 <code>/proc/sys/kernel/sched_child_runs_first</code> ，将该文件的值置为<strong>非零</strong>可以让内核在创建完进程后会将子进程放在就绪态队列前端，避免父进程先写入数据导致无意义拷贝（但这并不能完全保证子进程优先执行）。</p>
+</blockquote>
+<h2 id="库函数-system"><a href="#库函数-system" class="headerlink" title="库函数 system"></a>库函数 <code>system</code></h2><p>作为对 <code>fork</code> 和 <code>execl</code> 系统调用的封装， <code>system</code> 这个库函数是的代码执行部分等价于:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">execl(<span class="string">"/bin/sh"</span>, <span class="string">"sh"</span>, <span class="string">"-c"</span>, command, (<span class="keyword">char</span> *) <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="实现简单的-shell"><a href="#实现简单的-shell" class="headerlink" title="实现简单的 shell"></a>实现简单的 shell</h2><h1 id="命令处理流程"><a href="#命令处理流程" class="headerlink" title="命令处理流程"></a>命令处理流程</h1><h2 id="命令预处理"><a href="#命令预处理" class="headerlink" title="命令预处理"></a>命令预处理</h2><p>为了避免创建无意义进程， <code>bash</code> 在执行命令前会按照以下步骤对输入的命令进行检查：</p>
+<ul>
+<li>检查命令是否包含 <code>/</code> ，如果不包含就检查当前 <code>shell</code> 的函数列表, 否则将命令视为外部命令执行。</li>
+<li>检查内置命令列表。</li>
+<li>检查 <code>PATH</code> 变量中的所有路径， <code>bash</code> 使用哈希表（内存中的数据存储区）记住可执行文件的完整路径名，因此可以避免多次重复的全局搜索。</li>
+<li>如果还是找不到就返回 <code>127</code> 状态码。</li>
+<li>如果命令不是以异步方式启动的，则 <code>shell</code> 将等待命令完成并获取其退出状态。</li>
+</ul>
+<h2 id="命令执行"><a href="#命令执行" class="headerlink" title="命令执行"></a>命令执行</h2><h2 id="命令执行环境"><a href="#命令执行环境" class="headerlink" title="命令执行环境"></a>命令执行环境</h2><h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a href="https://stackoverflow.com/questions/23695915/does-the-linux-scheduler-prefer-to-run-child-process-after-fork" target="_blank" rel="noopener">Does the Linux scheduler prefer to run child process after fork()?</a></li>
+<li><a href="https://stackoverflow.com/questions/17391201/does-proc-sys-kernel-sched-child-runs-first-work/17393268%2317393268" target="_blank" rel="noopener">Does /proc/sys/kernel/sched_child_runs_first work?</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F/" data-id="ck8oiuufk0002e6axf8q2amgg" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E7%A7%8D%E7%B1%BB/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          bash/mechanism/命令的种类
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/04/06/bash/mechanism/%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">bash/mechanism/自动补全</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/">bash/mechanism/信号处理</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E7%A7%8D%E7%B1%BB/">bash/mechanism/命令的种类</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E5%91%BD%E4%BB%A4%E7%9A%84%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F/">bash/mechanism/命令的执行方式</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/">bash/mechanism/自动补全</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/06/bash/mechanism/%E5%AD%90shell/">bash/mechanism/子shell</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
