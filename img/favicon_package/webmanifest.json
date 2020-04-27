@@ -1,0 +1,22 @@
+{
+  "name": "Scarlet Official",
+  "short_name": "Scarlet Official",
+  "description": "About an engineer & designer who loves web.",
+    "icons": [
+        {
+            "src": "/img/favicon_package/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/img/favicon_package/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+  "background_color": "#fff",
+  "theme_color": "#000",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+}
