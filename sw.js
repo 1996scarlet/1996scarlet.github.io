@@ -15,18 +15,18 @@ const CACHE = CACHE_NAMESPACE + 'precache-then-runtime';
 const PRECACHE_LIST = [
   "./",
   "./offline.html",
-  "./js/jquery.min.js",
-  "./js/bootstrap.min.js",
   "./js/blog.min.js",
   "./js/snackbar.js",
-  "./img/icon_wechat.png",
   "./img/home-bg.webp",
   "./img/404-bg.jpg",
   "./css/blog.min.css",
-  "./css/bootstrap.min.css"
-  // "//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css",
-  // "//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/fonts/fontawesome-webfont.woff2?v=4.6.3",
-  // "//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"
+  "https://cdn.bootcdn.net/ajax/libs/jquery-one-page-nav/3.0.0/jquery.nav.min.js",
+  "https://cdn.bootcdn.net/ajax/libs/fastclick/1.0.6/fastclick.min.js",
+  "https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js",
+  "https://cdn.bootcdn.net/ajax/libs/jquery/3.5.0/jquery.min.js",
+  "https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css",
+  "https://cdn.bootcdn.net/ajax/libs/mathjax/3.0.5/es5/tex-chtml.js",
+  "https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
 ]
 const HOSTNAME_WHITELIST = [
   self.location.hostname,
