@@ -1,7 +1,8 @@
 # Site settings
 title: Scarlet Official
 SEOTitle: 斯卡蕾特单推委员会 | Scarlet Official
-header-img: img/home-bg.webp
+bed: "https://s1.ax1x.com"
+header-img: 2020/05/17/Y2xXVK.jpg
 email: 1996scarlet@gmail.com
 description: "每天推一个也是单推"
 keyword: "后端, 技术博客, Linux, Python, Docker, Nginx, FFMPEG, OpenCV, Redis"
@@ -81,7 +82,7 @@ netease_comment: false
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
 sidebar-about-description: "Wir müssen wissen<br>我们必须知道<br>Wir werden wissen<br>我们必将知道"
-sidebar-avatar: /img/avatar-scarlet-ny.webp      # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-avatar: https://s1.ax1x.com/2020/05/17/Y2xT29.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
 
@@ -105,13 +106,10 @@ service-worker: true
 # Friends
 friends: [
     {
-        title: "又拍云联盟",
-        href: "https://www.upyun.com/league"
-    },{
         title: "人体运动仿真研究组",
         href: "http://humanmotion.ict.ac.cn"
     },{
-        title: "Open Vtuber",
-        href: "https://github.com/1996scarlet/OpenVtuber"
+        title: "又拍云联盟",
+        href: "https://www.upyun.com/league"
     }
 ]
