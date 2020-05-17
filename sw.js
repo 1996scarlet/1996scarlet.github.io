@@ -16,10 +16,12 @@ const PRECACHE_LIST = [
   "./",
   "./offline.html",
   "./js/blog.min.js",
+  "./js/archive.js",
+  "./js/jquery.tagcloud.js",
   "./js/snackbar.js",
-  "./img/home-bg.webp",
-  "./img/404-bg.jpg",
   "./css/blog.min.css",
+  "https://s1.ax1x.com/2020/05/17/Y2xXVK.jpg",
+  "https://s1.ax1x.com/2020/05/17/Y2x7vR.jpg",
   "https://cdn.bootcdn.net/ajax/libs/jquery-one-page-nav/3.0.0/jquery.nav.min.js",
   "https://cdn.bootcdn.net/ajax/libs/fastclick/1.0.6/fastclick.min.js",
   "https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js",
@@ -30,9 +32,8 @@ const PRECACHE_LIST = [
 ]
 const HOSTNAME_WHITELIST = [
   self.location.hostname,
-  "huangxuan.me",
-  "yanshuo.io",
-  "cdnjs.cloudflare.com"
+  "hololive.me",
+  "cdn.bootcdn.net"
 ]
 const DEPRECATED_CACHES = ['precache-v1', 'runtime', 'main-precache-v1', 'main-runtime']
 
