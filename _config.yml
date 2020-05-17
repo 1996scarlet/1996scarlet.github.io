@@ -105,8 +105,11 @@ service-worker: true
 # Friends
 friends: [
     {
+        title: "又拍云联盟",
+        href: "https://www.upyun.com/league"
+    },{
         title: "人体运动仿真研究组",
-        href: "http://humanmotion.ict.ac.cn/"
+        href: "http://humanmotion.ict.ac.cn"
     },{
         title: "Open Vtuber",
         href: "https://github.com/1996scarlet/OpenVtuber"
