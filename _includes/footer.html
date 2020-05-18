@@ -29,7 +29,8 @@
 <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 <!-- Custom Theme JavaScript -->
-<script src="{{ "/js/blog.min.js " | prepend: site.baseurl }}"></script>
+<!-- <script src="{{ "/js/blog.min.js " | prepend: site.baseurl }}"></script> -->
+<script src="https://cdn.jsdelivr.net/gh/Huxpro/huxpro.github.io/js/hux-blog.min.js"></script>
 
 <!-- Service Worker -->
 {% if site.service-worker %}
@@ -53,7 +54,8 @@
 {% if page.title == 'Archive' %}
 <!-- jquery.tagcloud.js -->
 <script>
-    async('{{ "/js/jquery.tagcloud.js" | prepend: site.baseurl }}',function(){
+    // async('{{ "/js/jquery.tagcloud.js" | prepend: site.baseurl }}',function(){
+    async('https://cdn.jsdelivr.net/gh/Huxpro/huxpro.github.io/js/jquery.tagcloud.js',function(){
         $.fn.tagcloud.defaults = {
             //size: {start: 1, end: 1, unit: 'em'},
             color: {start: '#bbbbee', end: '#2f93b4'},
@@ -61,7 +63,10 @@
         $('#tag_cloud a').tagcloud();
     })
 </script>
-<script src='{{ "/js/archive.js " | prepend: site.baseurl }}'></script>
+
+<script src='https://cdn.jsdelivr.net/gh/Huxpro/huxpro.github.io/js/archive.js'></script>
+
+<!-- <script src='{{ "/js/archive.js " | prepend: site.baseurl }}'></script> -->
 {% endif %}
 
 <!--fastClick.js -->

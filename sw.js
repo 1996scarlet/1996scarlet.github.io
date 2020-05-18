@@ -19,7 +19,6 @@ const PRECACHE_LIST = [
   "./js/archive.js",
   "./js/jquery.tagcloud.js",
   "./js/snackbar.js",
-  "./css/blog.min.css",
   "https://s1.ax1x.com/2020/05/17/Y2xXVK.jpg",
   "https://s1.ax1x.com/2020/05/17/Y2x7vR.jpg",
   "https://cdn.bootcdn.net/ajax/libs/jquery-one-page-nav/3.0.0/jquery.nav.min.js",
