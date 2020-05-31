@@ -2,7 +2,7 @@
 title: Scarlet Official
 SEOTitle: 斯卡雷特单推委员会 | Scarlet Official
 bed: "https://s1.ax1x.com"
-header-img: 2020/05/17/Y2xXVK.jpg
+header-img: 2020/05/22/YjElxP.jpg
 email: 1996scarlet@gmail.com
 description: "每天推一个也是单推"
 keyword: "后端, 技术博客, Linux, Python, Docker, Nginx, FFMPEG, OpenCV, Redis"
@@ -75,7 +75,7 @@ kramdown:
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
 sidebar-about-description: "Wir müssen wissen<br>我们必须知道<br>Wir werden wissen<br>我们必将知道"
-sidebar-avatar: https://s1.ax1x.com/2020/05/17/Y2xT29.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-avatar: https://s1.ax1x.com/2020/05/22/YjEM8I.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
 
