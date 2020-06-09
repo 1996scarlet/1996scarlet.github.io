@@ -12,6 +12,7 @@ def spider_builder(*, url_bulider, xpath_rules, **kwargs):
     def spider(content):
         response = requests.get(url_bulider(content), **kwargs)
         html = etree.HTML(response.text)
+        # print(etree.tostring(html, encoding=str, pretty_print=True))
         return (html.xpath(rule) for rule in xpath_rules)
 
     return spider
@@ -39,5 +40,5 @@ if __name__ == '__main__':
                                      xpath_rules=xpath_rules,
                                      headers=headers, params={})
 
-    print_results(bilibili_spider('cv2709447'))
+    print_results(bilibili_spider('cv6361390'))
     # title, holder, img = bilibili_spider('cv2709447')
