@@ -2,40 +2,68 @@ from functools import lru_cache
 
 
 class BaseHashTable():
-    pass
-
-
-class HashTable(BaseHashTable):
-
-    def __init__(self, *, init_size=16, hash_func=None,
+    def __init__(self, *, init_size=16,
+                 hash_func=None,
                  loader_factor=0.75):
-        self._loader_factor = loader_factor
-        self._create(init_size)
-        self._hash_func = hash_func if hash_func else hash
-        self._rehash_flag = False
-
-    def _create(self, init_size):
         self._size = init_size
+        self._loader_factor = loader_factor
+        self._hash_func = hash_func if hash_func else hash
+        self._create()
+
+    def _create(self):
+        self._rehash_thd = int(self._size * self._loader_factor)
         self._entry = [[] for i in range(self._size)]
+        self._filled = 0
 
     @lru_cache
     def _hash(self, key):
-        return self._hash_func(key) % self._size
+        # 0x7FFFFFFF
+        hashed = self._hash_func(key)
+        
+        # 等价于 hashed % self._size
+        return self._size - 1 & hashed
+
+    def _rehash(self):
+        raise NotImplementedError
+
+    def _insert(self, key, value):
+        raise NotImplementedError
+
+    def _search(self, key):
+        raise NotImplementedError
+
+    def _delete(self, key):
+        raise NotImplementedError
+
+    def __getitem__(self, key):
+        return self._search(key)
+
+    def __setitem__(self, key, value):
+        self._insert(key, value)
+
+        if self._filled > self._rehash_thd:
+            self._size <<= 1
+            self._rehash()
+
+    def __delitem__(self, key):
+        self._delete(key)
+
+
+class HashTable(BaseHashTable):
 
     def _insert(self, key, value):
         index = self._hash(key)
         index_list = self._entry[index]
 
-        if len(index_list) > 7:
-            self._rehash_flag = True
+        if not index_list:
+            self._filled += 1
 
         for i, item in enumerate(index_list):
             if item[0] == key:
                 index_list[i] = (key, value)
-                return True
+                return
 
         index_list.append((key, value))
-        return True
 
     def _entry_reduce(self, iterable):
         for each in iterable:
@@ -44,66 +72,64 @@ class HashTable(BaseHashTable):
             else:
                 yield each
 
-    def _rehash(self, init_size):
+    def _rehash(self):
         reduced = self._entry_reduce(self._entry)
-        self._create(init_size)
+        self._create()
 
         for i in reduced:
             self._insert(*i)
 
         print("rehash done")
 
-    def __repr__(self):
-        reduced = self._entry_reduce(self._entry)
-        return str(list(reduced))
-
-    def __len__(self):
-        reduced = self._entry_reduce(self._entry)
-        return len(list(reduced))
-
     def _search(self, key):
+        index = self._hash(key)
+        index_list = self._entry[index]
+
+        for item in index_list:
+            if item[0] == key:
+                return item
+
+        raise KeyError
+
+    def _delete(self, key):
         index = self._hash(key)
         index_list = self._entry[index]
 
         for item in self._entry[index]:
             if item[0] == key:
-                return item[1]
+                index_list.remove(item)
+                if not index_list:
+                    self._filled -= 1
+                return
 
-        return None
-
-    def __getitem__(self, key):
-        if res := self._search(key):
-            return res
         raise KeyError
 
-    def __setitem__(self, key, value):
-        self._insert(key, value)
-        if self._rehash_flag:
-            self._rehash(self._size * 2 + 1)
-            self._rehash_flag = False
+    def __repr__(self):
+        reduced = self._entry_reduce(self._entry)
+        return str(list(reduced))
+
+    def __len__(self):
+        return self._filled
 
 
-def id_mod_hash(key):
+def id_hash(key):
     return key if isinstance(key, int) else id(key)
 
 
-# ht = HashTable(hash_func=id_mod_hash)
-ht = HashTable()
+ht = HashTable(hash_func=id_hash)
+# ht = HashTable()
 
 ht["abc"] = 9
 ht[-7] = 3
 ht[-7] = 6
-ht[3] = "poi"
 ht[3] = 3
+ht[3] = "poi"
 
-for i in range(2**16):
-    ht[i] = i
-
-# print(ht, len(ht))
-
-# ht[6]
-
-# p = {}
+del ht[3]
+del ht[-7]
+# del ht[-9]
 
 # for i in range(2**16):
-#     p[f"a{i}"] = i
+#     ht[i] = i
+
+print(ht, len(ht))
