@@ -19,7 +19,7 @@ class BaseHashTable():
     def _hash(self, key):
         # 0x7FFFFFFF
         hashed = self._hash_func(key)
-        
+
         # 等价于 hashed % self._size
         return self._size - 1 & hashed
 
@@ -133,3 +133,10 @@ del ht[-7]
 #     ht[i] = i
 
 print(ht, len(ht))
+
+def counter(a):
+    while a:
+        yield a&1
+        a >>= 1
+
+print(sum(counter(7)))
