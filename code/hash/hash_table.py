@@ -19,7 +19,6 @@ class BaseHashTable():
     def _hash(self, key):
         # 0x7FFFFFFF
         hashed = self._hash_func(key)
-
         # 等价于 hashed % self._size
         return self._size - 1 & hashed
 
@@ -52,17 +51,21 @@ class BaseHashTable():
 class HashTable(BaseHashTable):
 
     def _insert(self, key, value):
+        # 获取key对应的哈希值
         index = self._hash(key)
+        # 根据哈希值获得对应的链表索引
         index_list = self._entry[index]
 
         if not index_list:
             self._filled += 1
 
+        # 如果该key已经存在就更新value
         for i, item in enumerate(index_list):
             if item[0] == key:
                 index_list[i] = (key, value)
                 return
 
+        # 如果该key不存在就新增(key, value)元组
         index_list.append((key, value))
 
     def _entry_reduce(self, iterable):
