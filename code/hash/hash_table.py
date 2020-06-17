@@ -34,16 +34,19 @@ class BaseHashTable():
     def _delete(self, key):
         raise NotImplementedError
 
+    # value = ht["key"]
     def __getitem__(self, key):
         return self._search(key)
 
+    # ht["key"] = value
     def __setitem__(self, key, value):
         self._insert(key, value)
-
+    
         if self._filled > self._rehash_thd:
             self._size <<= 1
             self._rehash()
 
+    # del ht["key"]
     def __delitem__(self, key):
         self._delete(key)
 
@@ -115,31 +118,23 @@ class HashTable(BaseHashTable):
         return self._filled
 
 
-def id_hash(key):
-    return key if isinstance(key, int) else id(key)
+def main_test():
+    def id_hash(key):
+        return key if isinstance(key, int) else id(key)
+
+    ht = HashTable(hash_func=id_hash)
+
+    ht["abc"] = 9
+    ht[-7] = 3
+    ht[-7] = 6
+    ht[3] = 3
+    ht[3] = "poi"
+
+    del ht[3]
+    del ht[-7]
+
+    print(ht, ht["abc"], len(ht))
 
 
-ht = HashTable(hash_func=id_hash)
-# ht = HashTable()
-
-ht["abc"] = 9
-ht[-7] = 3
-ht[-7] = 6
-ht[3] = 3
-ht[3] = "poi"
-
-del ht[3]
-del ht[-7]
-# del ht[-9]
-
-# for i in range(2**16):
-#     ht[i] = i
-
-print(ht, len(ht))
-
-def counter(a):
-    while a:
-        yield a&1
-        a >>= 1
-
-print(sum(counter(7)))
+if __name__ == "__main__":
+    main_test()
