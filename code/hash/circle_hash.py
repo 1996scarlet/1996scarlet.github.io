@@ -4,7 +4,7 @@ from bintrees import FastRBTree
 def hash_builder(size=0xffffffff):
     # 0xffffffff = 2**32 - 1
     def hash_func(x):
-        return hash(x) & size
+        return size & hash(x)
     return hash_func
 
 
@@ -29,7 +29,7 @@ ip_list = [
 my_hash = hash_builder()
 
 rbtree = FastRBTree(gen_hashed_ip(my_hash, ip_list))
-print(rbtree)
+# print(rbtree)
 
 hashed = my_hash('a.jpg')
 

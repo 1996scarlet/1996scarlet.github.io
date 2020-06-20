@@ -137,21 +137,4 @@ def main_test():
 
 
 if __name__ == "__main__":
-    # main_test()
-    def isHappy(n: int) -> bool:
-        num_set = set()
-        while n != 1:
-            summer = 0
-            while n != 0:
-                summer += (n%10)**2
-                n //= 10
-
-            n = int(summer)
-            print(n)
-            if n in num_set:
-                return False
-            num_set.add(n)
-            
-        return True 
-
-    print(isHappy(19))
+    main_test()
