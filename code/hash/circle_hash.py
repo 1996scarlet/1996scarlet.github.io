@@ -40,26 +40,20 @@
 #     print('闭环')
 #     print(hashed, rbtree.min_item())
 
-import time
+import collections
+import re
 
-def func_timer(func):
-    def insider(*args):
-        st = time.perf_counter()
-        func(*args)
-        print(time.perf_counter() - st)
-    return insider
+def mostCommonWord(paragraph: str, banned) -> str:
+    np = filter(lambda x: x, re.split("[!?',;. ]", paragraph.lower()))
+    s = set(banned)
+    d = list(collections.Counter(np).items())
+    d.sort(key=lambda x: x[1], reverse=True)
+    print(d)
+    for k, v in d:
+        if k not in s:
+            return k
 
-@func_timer
-def str_add(base, adder, times):
-    for i in range(times):
-        base += adder
+paragraph = "Bob hit a ball, the hit BALL flew far after it was hit."
+banned = ["hit"]
 
-@func_timer
-def join_add(base, adder, times):
-    base.join(adder for i in range(times))
-
-N = 10**7
-A = "nginx" * 16
-
-str_add("", A, N)
-join_add("", A, N)
+print(mostCommonWord(paragraph, banned))
