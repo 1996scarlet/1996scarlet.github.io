@@ -57,5 +57,60 @@ print(res)
 #     if x != y != z]
 # )
 
-vtubers = ['miko', 'watame', 'fubuki', 'pekora']
-print([name for name in vtubers if len(name) > 5])
+# vtubers = ['miko', 'watame', 'fubuki', 'pekora']
+# print([name for name in vtubers if len(name) > 5])
+
+# def fib(n):
+#     a, b = 0, 1
+#     for _ in range(n):
+#         a, b = b, a + b
+#     return a
+
+# print(fib(0))
+
+# def func(name, comp='hololive', *args, **kwargs):
+#     return comp, name, kwargs
+
+# print(func('aqua', age=5))
+# print(func('alice', comp='2434', age=16))
+
+# def wrap(*args, **kwargs):
+#     print(args)
+#     print(kwargs)
+
+# wrap('mea', 18, types='debu')
+
+# def func(var1, *args, **kwargs):
+#     return var1, args, kwargs
+
+# print(func(*range(5), poi='poi'))
+# print(func(1, poi='poi'))
+
+# print(func(1, 2, default=-1, poi='poi'))
+
+# def recv(maxsize, tag='socket', *, block):
+#     return maxsize, tag, block
+
+# print(recv(1024, block=True))
+# print(recv(4096, 'files', block=True))
+
+# from collections import namedtuple
+
+# Vtuber = namedtuple('Vtuber', ['name', 'age', 'company'])
+
+# mea = Vtuber('mea', 18, None)
+
+# print(mea[0] is mea.name)
+# print(mea)
+
+# a = Vtuber()
+# print(a.name)
+
+t = (1, 2, [30, 40])
+
+try:
+    t[2] += [50, 60]
+except TypeError as e:
+    print(e)
+
+print(t)
