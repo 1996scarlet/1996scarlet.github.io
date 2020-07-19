@@ -106,11 +106,26 @@ print(res)
 # a = Vtuber()
 # print(a.name)
 
-t = (1, 2, [30, 40])
+# t = (1, 2, [30, 40])
 
-try:
-    t[2] += [50, 60]
-except TypeError as e:
-    print(e)
+# try:
+#     t[2] += [50, 60]
+# except TypeError as e:
+#     print(e)
 
-print(t)
+# print(t)
+class MySeq:
+    def __getitem__(self, index):
+        if isinstance(index, slice):
+            print(f"slice: {index}")
+        elif isinstance(index, int):
+            print(f"index: {index}")
+        else:
+            msg = f"{type(self)} indices must be integers"
+            raise TypeError(msg)
+
+s = MySeq()
+
+s[9]
+s[::-1]
+s["key"]
