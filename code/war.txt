@@ -1,0 +1,77 @@
+Classfile /home/remilia/GitHub/1996scarlet.github.io/code/Demo.class
+  Last modified Aug 25, 2020; size 412 bytes
+  MD5 checksum 83faae6e8a3084525bdd08fea32edeb5
+  Compiled from "Demo.java"
+public class Demo
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #5.#14         // java/lang/Object."<init>":()V
+   #2 = Fieldref           #15.#16        // java/lang/System.out:Ljava/io/PrintStream;
+   #3 = Methodref          #17.#18        // java/io/PrintStream.println:(I)V
+   #4 = Class              #19            // Demo
+   #5 = Class              #20            // java/lang/Object
+   #6 = Utf8               <init>
+   #7 = Utf8               ()V
+   #8 = Utf8               Code
+   #9 = Utf8               LineNumberTable
+  #10 = Utf8               main
+  #11 = Utf8               ([Ljava/lang/String;)V
+  #12 = Utf8               SourceFile
+  #13 = Utf8               Demo.java
+  #14 = NameAndType        #6:#7          // "<init>":()V
+  #15 = Class              #21            // java/lang/System
+  #16 = NameAndType        #22:#23        // out:Ljava/io/PrintStream;
+  #17 = Class              #24            // java/io/PrintStream
+  #18 = NameAndType        #25:#26        // println:(I)V
+  #19 = Utf8               Demo
+  #20 = Utf8               java/lang/Object
+  #21 = Utf8               java/lang/System
+  #22 = Utf8               out
+  #23 = Utf8               Ljava/io/PrintStream;
+  #24 = Utf8               java/io/PrintStream
+  #25 = Utf8               println
+  #26 = Utf8               (I)V
+{
+  public Demo();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 3: 0
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=3, locals=5, args_size=1
+         0: sipush        500
+         3: istore_1
+         4: bipush        100
+         6: istore_2
+         7: iload_1
+         8: iload_2
+         9: idiv
+        10: istore_3
+        11: bipush        50
+        13: istore        4
+        15: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+        18: iload_3
+        19: iload         4
+        21: iadd
+        22: invokevirtual #3                  // Method java/io/PrintStream.println:(I)V
+        25: return
+      LineNumberTable:
+        line 6: 0
+        line 7: 4
+        line 8: 7
+        line 9: 11
+        line 10: 15
+        line 11: 25
+}
+SourceFile: "Demo.java"
